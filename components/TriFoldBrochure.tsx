@@ -11,9 +11,7 @@ import { useEffect, useState } from "react";
 
 const PANEL_WIDTH = 380;
 const BROCHURE_HEIGHT = 660;
-const CLOSED_WIDTH = PANEL_WIDTH;
-const MID_WIDTH = PANEL_WIDTH * 2;
-const OPEN_WIDTH = PANEL_WIDTH * 3;
+const BROCHURE_WIDTH = PANEL_WIDTH;
 
 const WING_DURATION = 0.75;
 const wingTransition = { duration: WING_DURATION, ease: [0.4, 0, 0.2, 1] as const };
@@ -174,7 +172,6 @@ function RightFoldedFace() {
 export default function TriFoldBrochure() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const containerWidth = useMotionValue(CLOSED_WIDTH);
   const leftRotate = useMotionValue(180);
   const rightRotate = useMotionValue(-180);
 
@@ -185,37 +182,25 @@ export default function TriFoldBrochure() {
     const controls: ReturnType<typeof animate>[] = [];
 
     if (isOpen) {
-      // Open: left wing first, then right wing; width grows W → 2W → 3W
       controls.push(
         animate(leftRotate, 0, wingTransition),
-        animate(containerWidth, MID_WIDTH, wingTransition),
         animate(rightRotate, 0, { ...wingTransition, delay: WING_DURATION }),
-        animate(containerWidth, OPEN_WIDTH, {
-          ...wingTransition,
-          delay: WING_DURATION,
-        }),
       );
     } else {
-      // Close: right wing onto center first, then left wing on top; width 3W → 2W → W
       controls.push(
         animate(rightRotate, -180, wingTransition),
-        animate(containerWidth, MID_WIDTH, wingTransition),
         animate(leftRotate, 180, { ...wingTransition, delay: WING_DURATION }),
-        animate(containerWidth, CLOSED_WIDTH, {
-          ...wingTransition,
-          delay: WING_DURATION * 2,
-        }),
       );
     }
 
     return () => controls.forEach((control) => control.stop());
-  }, [isOpen, containerWidth, leftRotate, rightRotate]);
+  }, [isOpen, leftRotate, rightRotate]);
 
   return (
     <div className="mx-auto flex justify-center [perspective:1400px]">
-      <motion.div
+      <div
         className="overflow-visible rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.28)]"
-        style={{ width: containerWidth, height: BROCHURE_HEIGHT }}
+        style={{ width: BROCHURE_WIDTH, height: BROCHURE_HEIGHT }}
       >
         <motion.button
           type="button"
@@ -280,7 +265,7 @@ export default function TriFoldBrochure() {
             {isOpen && <Crease side="right" />}
           </motion.div>
         </motion.button>
-      </motion.div>
+      </div>
     </div>
   );
 }
