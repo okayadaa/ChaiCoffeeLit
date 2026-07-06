@@ -9,8 +9,8 @@ import {
 } from "motion/react";
 import { useEffect, useState } from "react";
 
-const PANEL_WIDTH = 300;
-const BROCHURE_HEIGHT = 520;
+const PANEL_WIDTH = 380;
+const BROCHURE_HEIGHT = 660;
 const CLOSED_WIDTH = PANEL_WIDTH;
 const MID_WIDTH = PANEL_WIDTH * 2;
 const OPEN_WIDTH = PANEL_WIDTH * 3;
@@ -88,12 +88,12 @@ function PanelFace({
 function BackCover() {
   return (
     <div className="relative z-10 flex h-full flex-col items-center justify-center px-8 text-center">
-      <div className="mb-6 h-20 w-20 rounded-full border-2 border-amber-800/30 bg-amber-900/10 shadow-inner" />
+      <div className="mb-6 h-24 w-24 rounded-full border-2 border-amber-800/30 bg-amber-900/10 shadow-inner" />
       <p className="text-[10px] uppercase tracking-[0.4em] text-amber-800/70">
         Chai Coffee Lit
       </p>
-      <h2 className="mt-2 font-serif text-3xl text-amber-950">Front Cover</h2>
-      <p className="mt-4 max-w-[200px] text-sm leading-relaxed text-amber-900/70">
+      <h2 className="mt-2 font-serif text-4xl text-amber-950">Front Cover</h2>
+      <p className="mt-4 max-w-[260px] text-sm leading-relaxed text-amber-900/70">
         42 Roastery Lane · Open daily 7am – 7pm
       </p>
       <p className="mt-8 text-[10px] uppercase tracking-[0.3em] text-amber-800/50">
@@ -106,7 +106,7 @@ function BackCover() {
 function LeftInside() {
   return (
     <div className="relative z-10 p-8">
-      <h3 className="mb-4 font-serif text-xl text-amber-950">Espresso</h3>
+      <h3 className="mb-4 font-serif text-2xl text-amber-950">Espresso</h3>
       <ul className="space-y-3 text-sm text-amber-900/80">
         <li className="flex justify-between border-b border-amber-900/10 pb-2">
           <span>Americano</span>
@@ -131,8 +131,8 @@ function CenterPanel() {
       <p className="mb-2 text-[10px] uppercase tracking-[0.35em] text-amber-800/60">
         Est. 2026
       </p>
-      <h2 className="font-serif text-4xl text-amber-950">Our Menu</h2>
-      <p className="mt-3 max-w-[220px] text-sm leading-relaxed text-amber-900/70">
+      <h2 className="font-serif text-5xl text-amber-950">Our Menu</h2>
+      <p className="mt-3 max-w-[280px] text-sm leading-relaxed text-amber-900/70">
         Single-origin pours, house chai, and pastries baked each morning.
       </p>
     </div>
@@ -142,7 +142,7 @@ function CenterPanel() {
 function RightInside() {
   return (
     <div className="relative z-10 p-8">
-      <h3 className="mb-4 font-serif text-xl text-amber-950">Chai &amp; Tea</h3>
+      <h3 className="mb-4 font-serif text-2xl text-amber-950">Chai &amp; Tea</h3>
       <ul className="space-y-3 text-sm text-amber-900/80">
         <li className="flex justify-between border-b border-amber-900/10 pb-2">
           <span>Masala Chai</span>
@@ -196,7 +196,7 @@ export default function TriFoldBrochure() {
         }),
       );
     } else {
-      // Close: right wing first, then left wing; width stays 2W during left fold, then shrinks to W
+      // Close: right wing onto center first, then left wing on top; width 3W → 2W → W
       controls.push(
         animate(rightRotate, -180, wingTransition),
         animate(containerWidth, MID_WIDTH, wingTransition),
@@ -212,74 +212,75 @@ export default function TriFoldBrochure() {
   }, [isOpen, containerWidth, leftRotate, rightRotate]);
 
   return (
-    <div
-      className="mx-auto flex justify-center overflow-visible rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.28)] [perspective:1400px]"
-      style={{ width: OPEN_WIDTH, height: BROCHURE_HEIGHT }}
-    >
-      <motion.button
-        type="button"
-        onClick={() => setIsOpen((open) => !open)}
-        aria-expanded={isOpen}
-        aria-label={isOpen ? "Close brochure" : "Open brochure"}
-        className="relative block cursor-pointer overflow-visible rounded-sm border-0 bg-transparent p-0 [transform-style:preserve-3d]"
+    <div className="mx-auto flex justify-center [perspective:1400px]">
+      <motion.div
+        className="overflow-visible rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.28)]"
         style={{ width: containerWidth, height: BROCHURE_HEIGHT }}
       >
-        {/* Center panel — pinned to viewport center via container midpoint */}
-        <div
-          className="absolute top-0 z-[5] h-full overflow-hidden rounded-sm"
-          style={{
-            width: PANEL_WIDTH,
-            left: "50%",
-            transform: `translateX(-${PANEL_WIDTH / 2}px)`,
-          }}
+        <motion.button
+          type="button"
+          onClick={() => setIsOpen((open) => !open)}
+          aria-expanded={isOpen}
+          aria-label={isOpen ? "Close brochure" : "Open brochure"}
+          className="relative block h-full w-full cursor-pointer overflow-visible rounded-sm border-0 bg-transparent p-0 [transform-style:preserve-3d]"
         >
-          <PanelFace className="rounded-sm">
-            <CenterPanel />
-          </PanelFace>
-          {isOpen && <Crease side="left" />}
-          {isOpen && <Crease side="right" />}
-        </div>
+          {/* Center panel — pinned to container midpoint */}
+          <div
+            className="absolute top-0 z-[5] h-full overflow-hidden rounded-sm"
+            style={{
+              width: PANEL_WIDTH,
+              left: "50%",
+              transform: `translateX(-${PANEL_WIDTH / 2}px)`,
+            }}
+          >
+            <PanelFace className="rounded-sm">
+              <CenterPanel />
+            </PanelFace>
+            {isOpen && <Crease side="left" />}
+            {isOpen && <Crease side="right" />}
+          </div>
 
-        {/* Right wing — folds onto center first; beneath left when closed */}
-        <motion.div
-          className="absolute top-0 z-[20] h-full [transform-style:preserve-3d] origin-left"
-          style={{
-            width: PANEL_WIDTH,
-            left: "50%",
-            x: PANEL_WIDTH / 2,
-            rotateY: rightRotate,
-            boxShadow: rightShadow,
-          }}
-        >
-          <PanelFace className="rounded-sm">
-            <RightInside />
-          </PanelFace>
-          <PanelFace flip className="rounded-sm">
-            <RightFoldedFace />
-          </PanelFace>
-          {isOpen && <Crease side="left" />}
-        </motion.div>
+          {/* Right wing — folds onto center first; beneath left when closed */}
+          <motion.div
+            className="absolute top-0 z-[20] h-full [transform-style:preserve-3d] origin-left"
+            style={{
+              width: PANEL_WIDTH,
+              left: "50%",
+              x: PANEL_WIDTH / 2,
+              rotateY: rightRotate,
+              boxShadow: rightShadow,
+            }}
+          >
+            <PanelFace className="rounded-sm">
+              <RightInside />
+            </PanelFace>
+            <PanelFace flip className="rounded-sm">
+              <RightFoldedFace />
+            </PanelFace>
+            {isOpen && <Crease side="left" />}
+          </motion.div>
 
-        {/* Left wing — folds on top when closed; back cover faces out */}
-        <motion.div
-          className="absolute top-0 z-[30] h-full [transform-style:preserve-3d] origin-right"
-          style={{
-            width: PANEL_WIDTH,
-            left: "50%",
-            x: -(PANEL_WIDTH * 1.5),
-            rotateY: leftRotate,
-            boxShadow: leftShadow,
-          }}
-        >
-          <PanelFace className="rounded-sm">
-            <LeftInside />
-          </PanelFace>
-          <PanelFace flip className="rounded-sm">
-            <BackCover />
-          </PanelFace>
-          {isOpen && <Crease side="right" />}
-        </motion.div>
-      </motion.button>
+          {/* Left wing — folds on top when closed; back cover faces out */}
+          <motion.div
+            className="absolute top-0 z-[30] h-full [transform-style:preserve-3d] origin-right"
+            style={{
+              width: PANEL_WIDTH,
+              left: "50%",
+              x: -(PANEL_WIDTH * 1.5),
+              rotateY: leftRotate,
+              boxShadow: leftShadow,
+            }}
+          >
+            <PanelFace className="rounded-sm">
+              <LeftInside />
+            </PanelFace>
+            <PanelFace flip className="rounded-sm">
+              <BackCover />
+            </PanelFace>
+            {isOpen && <Crease side="right" />}
+          </motion.div>
+        </motion.button>
+      </motion.div>
     </div>
   );
 }
