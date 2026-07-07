@@ -9,8 +9,9 @@ import {
 } from "motion/react";
 import { useEffect, useState } from "react";
 
-const PANEL_WIDTH = 380;
-const BROCHURE_HEIGHT = 660;
+const INCH = 96; // CSS reference pixels per inch
+const PANEL_WIDTH = 380 + 2 * INCH;
+const BROCHURE_HEIGHT = 660 + 2 * INCH;
 const BROCHURE_WIDTH = PANEL_WIDTH;
 
 const WING_DURATION = 0.75;
@@ -49,7 +50,7 @@ function useWingShadow(rotate: MotionValue<number>, side: "left" | "right") {
 function Crease({ side }: { side: "left" | "right" }) {
   return (
     <div
-      className={`pointer-events-none absolute top-0 h-full w-3 ${
+      className={`pointer-events-none absolute top-0 h-full w-4 ${
         side === "left" ? "right-0" : "left-0"
       }`}
       style={{
@@ -85,16 +86,16 @@ function PanelFace({
 
 function BackCover() {
   return (
-    <div className="relative z-10 flex h-full flex-col items-center justify-center px-8 text-center">
-      <div className="mb-6 h-24 w-24 rounded-full border-2 border-amber-800/30 bg-amber-900/10 shadow-inner" />
-      <p className="text-[10px] uppercase tracking-[0.4em] text-amber-800/70">
+    <div className="relative z-10 flex h-full flex-col items-center justify-center px-12 text-center">
+      <div className="mb-8 h-36 w-36 rounded-full border-2 border-amber-800/30 bg-amber-900/10 shadow-inner" />
+      <p className="text-xs uppercase tracking-[0.4em] text-amber-800/70">
         Chai Coffee Lit
       </p>
-      <h2 className="mt-2 font-serif text-4xl text-amber-950">Front Cover</h2>
-      <p className="mt-4 max-w-[260px] text-sm leading-relaxed text-amber-900/70">
+      <h2 className="mt-3 font-serif text-6xl text-amber-950">Front Cover</h2>
+      <p className="mt-6 max-w-[390px] text-lg leading-relaxed text-amber-900/70">
         42 Roastery Lane · Open daily 7am – 7pm
       </p>
-      <p className="mt-8 text-[10px] uppercase tracking-[0.3em] text-amber-800/50">
+      <p className="mt-10 text-xs uppercase tracking-[0.3em] text-amber-800/50">
         Tap to open
       </p>
     </div>
@@ -103,18 +104,18 @@ function BackCover() {
 
 function LeftInside() {
   return (
-    <div className="relative z-10 p-8">
-      <h3 className="mb-4 font-serif text-2xl text-amber-950">Espresso</h3>
-      <ul className="space-y-3 text-sm text-amber-900/80">
-        <li className="flex justify-between border-b border-amber-900/10 pb-2">
+    <div className="relative z-10 p-12">
+      <h3 className="mb-6 font-serif text-4xl text-amber-950">Espresso</h3>
+      <ul className="space-y-4 text-lg text-amber-900/80">
+        <li className="flex justify-between border-b border-amber-900/10 pb-3">
           <span>Americano</span>
           <span>$3.50</span>
         </li>
-        <li className="flex justify-between border-b border-amber-900/10 pb-2">
+        <li className="flex justify-between border-b border-amber-900/10 pb-3">
           <span>Cortado</span>
           <span>$4.00</span>
         </li>
-        <li className="flex justify-between border-b border-amber-900/10 pb-2">
+        <li className="flex justify-between border-b border-amber-900/10 pb-3">
           <span>Flat White</span>
           <span>$4.50</span>
         </li>
@@ -125,12 +126,12 @@ function LeftInside() {
 
 function CenterPanel() {
   return (
-    <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
-      <p className="mb-2 text-[10px] uppercase tracking-[0.35em] text-amber-800/60">
+    <div className="relative z-10 flex h-full flex-col items-center justify-center px-10 text-center">
+      <p className="mb-3 text-xs uppercase tracking-[0.35em] text-amber-800/60">
         Est. 2026
       </p>
-      <h2 className="font-serif text-5xl text-amber-950">Our Menu</h2>
-      <p className="mt-3 max-w-[280px] text-sm leading-relaxed text-amber-900/70">
+      <h2 className="font-serif text-7xl text-amber-950">Our Menu</h2>
+      <p className="mt-5 max-w-[420px] text-lg leading-relaxed text-amber-900/70">
         Single-origin pours, house chai, and pastries baked each morning.
       </p>
     </div>
@@ -139,18 +140,18 @@ function CenterPanel() {
 
 function RightInside() {
   return (
-    <div className="relative z-10 p-8">
-      <h3 className="mb-4 font-serif text-2xl text-amber-950">Chai &amp; Tea</h3>
-      <ul className="space-y-3 text-sm text-amber-900/80">
-        <li className="flex justify-between border-b border-amber-900/10 pb-2">
+    <div className="relative z-10 p-12">
+      <h3 className="mb-6 font-serif text-4xl text-amber-950">Chai &amp; Tea</h3>
+      <ul className="space-y-4 text-lg text-amber-900/80">
+        <li className="flex justify-between border-b border-amber-900/10 pb-3">
           <span>Masala Chai</span>
           <span>$4.50</span>
         </li>
-        <li className="flex justify-between border-b border-amber-900/10 pb-2">
+        <li className="flex justify-between border-b border-amber-900/10 pb-3">
           <span>Cardamom Latte</span>
           <span>$5.00</span>
         </li>
-        <li className="flex justify-between border-b border-amber-900/10 pb-2">
+        <li className="flex justify-between border-b border-amber-900/10 pb-3">
           <span>Matcha Oat</span>
           <span>$5.50</span>
         </li>
@@ -162,7 +163,7 @@ function RightInside() {
 function RightFoldedFace() {
   return (
     <div className="relative z-10 flex h-full items-center justify-center">
-      <p className="text-xs uppercase tracking-[0.3em] text-amber-800/40">
+      <p className="text-sm uppercase tracking-[0.3em] text-amber-800/40">
         Inside fold
       </p>
     </div>
@@ -197,7 +198,7 @@ export default function TriFoldBrochure() {
   }, [isOpen, leftRotate, rightRotate]);
 
   return (
-    <div className="mx-auto flex justify-center [perspective:1400px]">
+    <div className="mx-auto flex justify-center [perspective:2100px]">
       <div
         className="overflow-visible rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.28)]"
         style={{ width: BROCHURE_WIDTH, height: BROCHURE_HEIGHT }}
