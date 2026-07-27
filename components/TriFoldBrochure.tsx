@@ -233,7 +233,7 @@ function BackCover() {
       <Image
         src={logo}
         alt="Chai Coffee Lit logo"
-        className="mb-9 h-72 w-72 object-contain"
+        className="mb-[-65px] h-92 w-92 object-contain"
         priority
       />
       <p className="text-xs uppercase tracking-[0.4em] text-amber-800/70">
@@ -521,15 +521,28 @@ export default function TriFoldBrochure() {
 
   const brochureScene = (
     <div
-      className="relative mx-auto"
-      style={{
-        width: layoutWidth,
-        height: brochureHeight,
-        transition: `width ${WING_DURATION}s ${sizeEase}`,
-      }}
-    >
+    className="relative mx-auto touch-manipulation"
+    onClick={isMobile && mobileView !== "focus" ? handleMobileTap : undefined}
+    role={isMobile && mobileView !== "focus" ? "button" : undefined}
+    tabIndex={isMobile && mobileView !== "focus" ? 0 : undefined}
+    aria-expanded={isMobile ? isOpen : undefined}
+    aria-label={
+      isMobile
+        ? mobileView === "cover"
+          ? "Open brochure"
+          : "Close brochure"
+        : undefined
+    }
+    style={{
+      width: layoutWidth,
+      height: brochureHeight,
+      transition: `width ${WING_DURATION}s ${sizeEase}`,
+      WebkitTapHighlightColor: "transparent",
+      cursor: isMobile ? "pointer" : undefined,
+    }}
+  >
       <div
-        className="pointer-events-none absolute inset-0 flex justify-center [perspective:2100px]"
+        className="absolute inset-0 flex justify-center [perspective:2100px]"
         aria-hidden="true"
       >
         <div
@@ -594,25 +607,8 @@ export default function TriFoldBrochure() {
         </div>
       </div>
 
-      {isMobile ? (
-        mobileView !== "focus" && (
+      {!isMobile && (
           <button
-            type="button"
-            onClick={handleMobileTap}
-            aria-expanded={isOpen}
-            aria-label={
-              mobileView === "cover" ? "Open brochure" : "Close brochure"
-            }
-            className="absolute inset-0 z-[100] touch-manipulation border-0 p-0"
-            style={{
-              backgroundColor: "rgba(0,0,0,0.01)",
-              WebkitTapHighlightColor: "transparent",
-              cursor: "pointer",
-            }}
-          />
-        )
-      ) : (
-        <button
           type="button"
           onClick={toggle}
           aria-expanded={isOpen}
@@ -627,14 +623,14 @@ export default function TriFoldBrochure() {
       )}
     </div>
   );
-
+// Edit : Added build version to the mobile view 
   if (isMobile) {
     return (
+      
       <div className="relative flex w-full max-w-full flex-col items-center justify-center overflow-hidden">
         {mobileView === "focus" && <MobileBackButton onBack={backToOverview} />}
 
-        <div
-          className="relative flex w-full flex-1 items-center justify-center overflow-hidden"
+      <div className="relative flex w-full flex-1 items-center justify-center overflow-hidden"
           style={{ minHeight: availH }}
         >
           <motion.div
