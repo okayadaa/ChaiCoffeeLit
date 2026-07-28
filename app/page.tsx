@@ -1,4 +1,4 @@
-import TriFoldBrochure from "@/components/TriFoldBrochure";
+import TriFoldBrochure from "@/components/brochure/TriFoldBrochure";
 
 export default function Home() {
   return (
