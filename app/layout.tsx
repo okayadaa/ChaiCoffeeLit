@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Orbitron, Share_Tech_Mono } from "next/font/google";
+import { Orbitron, Share_Tech_Mono, Space_Mono } from "next/font/google";
 import "./globals.css";
 
 const orbitron = Orbitron({
@@ -12,6 +12,12 @@ const shareTechMono = Share_Tech_Mono({
   variable: "--font-share-tech-mono",
   weight: "400",
   subsets: ["latin"],
+});
+
+const spaceMono = Space_Mono({
+  variable: "--font-space-mono",
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -32,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${orbitron.variable} ${shareTechMono.variable} h-full antialiased`}
+      className={`${orbitron.variable} ${shareTechMono.variable} ${spaceMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">{children}</body>

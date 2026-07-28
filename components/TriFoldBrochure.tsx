@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  AnimatePresence,
   animate,
   motion,
   useMotionValue,
@@ -17,14 +18,31 @@ const BASE_BROCHURE_HEIGHT = 660 + 2 * INCH;
 const VIEWPORT_PADDING = 24;
 const MOBILE_MAX = 640;
 const MOBILE_TAB_HEIGHT = 56;
+const MOBILE_FOCUS_BACK_GAP = 10;
+const MOBILE_FOCUS_BACK_BUTTON_HEIGHT = 32;
+const MOBILE_FOCUS_BACK_CHROME =
+  MOBILE_FOCUS_BACK_GAP + MOBILE_FOCUS_BACK_BUTTON_HEIGHT;
 
 const WING_DURATION = 0.75;
 const wingTransition = { duration: WING_DURATION, ease: [0.4, 0, 0.2, 1] as const };
 const cameraTransition = { duration: WING_DURATION, ease: [0.4, 0, 0.2, 1] as const };
 const sizeEase = "cubic-bezier(0.4, 0, 0.2, 1)";
+const PANEL_SLIDE_DURATION = 0.45;
+const panelSlideTransition = {
+  duration: PANEL_SLIDE_DURATION,
+  ease: [0.4, 0, 0.2, 1] as const,
+};
 
 type MobileView = "cover" | "overview" | "focus";
+type SlideDirection = -1 | 0 | 1;
 type PanelId = "left" | "center" | "right";
+type LeftPanelView = "menu" | "about" | "blog";
+type RightPanelView = "menu" | "archive" | "books";
+
+type PanelNavLink = {
+  id: string;
+  label: string;
+};
 
 function subscribeToViewport(onChange: () => void) {
   window.addEventListener("resize", onChange);
@@ -120,7 +138,8 @@ function getMobileCamera(
 
   const coverScale = Math.min(availW / closedW, availH / brochureHeight);
   const overviewScale = Math.min(availW / openW, availH / brochureHeight);
-  const focusScale = Math.min(availW / panelWidth, availH / brochureHeight);
+  const focusAvailH = availH - MOBILE_FOCUS_BACK_CHROME;
+  const focusScale = Math.min(availW / panelWidth, focusAvailH / brochureHeight);
 
   if (mobileView === "cover") {
     return { scale: coverScale, x: 0, y: 0 };
@@ -190,7 +209,7 @@ function Crease({ side }: { side: "left" | "right" }) {
 function FaceContent({ fit, children }: { fit: number; children: React.ReactNode }) {
   return (
     <div
-      className="origin-top-left"
+      className="origin-top-left font-brochure"
       style={{
         width: BASE_PANEL_WIDTH,
         height: BASE_BROCHURE_HEIGHT,
@@ -236,12 +255,11 @@ function BackCover() {
         className="mb-[-65px] h-92 w-92 object-contain"
         priority
       />
-      <p className="text-xs uppercase tracking-[0.4em] text-amber-800/70">
+      <p className="font-norwester text-[25px] uppercase tracking-[0.4em] text-amber-800/70">
         Chai Coffee Lit
       </p>
-      <h2 className="mt-3 font-sans text-6xl text-amber-950">Front Cover</h2>
       <p className="mt-6 max-w-[390px] text-lg leading-relaxed text-amber-900/70">
-        42 Roastery Lane · Open daily 7am – 7pm
+        Open daily 7am – 7pm
       </p>
       <p className="mt-10 text-xs uppercase tracking-[0.3em] text-amber-800/50">
         Tap to open
@@ -250,25 +268,168 @@ function BackCover() {
   );
 }
 
-function LeftInside() {
+function PanelBackButton({ onBack }: { onBack: () => void }) {
   return (
-    <div className="relative z-10 p-12">
-      <h3 className="mb-6 font-sans text-4xl text-amber-950">Espresso</h3>
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        onBack();
+      }}
+      className="mb-8 touch-manipulation text-xs font-medium uppercase tracking-[0.2em] text-amber-900/70 transition-colors hover:text-amber-950"
+      aria-label="Home"
+    >
+      Home
+    </button>
+  );
+}
+
+function PanelNavLinks({
+  links,
+  onSelect,
+}: {
+  links: PanelNavLink[];
+  onSelect: (id: string) => void;
+}) {
+  return (
+    <div className="mt-10">
       <ul className="space-y-4 text-lg text-amber-900/80">
-        <li className="flex justify-between border-b border-amber-900/10 pb-3">
-          <span>Americano</span>
-          <span>$3.50</span>
-        </li>
-        <li className="flex justify-between border-b border-amber-900/10 pb-3">
-          <span>Cortado</span>
-          <span>$4.00</span>
-        </li>
-        <li className="flex justify-between border-b border-amber-900/10 pb-3">
-          <span>Flat White</span>
-          <span>$4.50</span>
-        </li>
+        {links.map((link) => (
+          <li
+            key={link.id}
+            className="border-b border-amber-900/10 pb-3 pl-6"
+          >
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelect(link.id);
+              }}
+              className="w-full touch-manipulation text-left transition-colors hover:text-white"
+            >
+              {link.label}
+            </button>
+          </li>
+        ))}
       </ul>
     </div>
+  );
+}
+
+function PanelTabContent({
+  title,
+  body,
+  onBack,
+}: {
+  title: string;
+  body: string;
+  onBack: () => void;
+}) {
+  return (
+    <div className="relative z-10 p-12">
+      <PanelBackButton onBack={onBack} />
+      <h3 className="mb-6 text-4xl text-amber-950">{title}</h3>
+      <p className="text-lg leading-relaxed text-amber-900/70">{body}</p>
+    </div>
+  );
+}
+
+const panelSlideVariants = {
+  enter: (direction: SlideDirection) => ({
+    y: direction === 1 ? "100%" : "-100%",
+  }),
+  center: { y: 0 },
+  exit: (direction: SlideDirection) => ({
+    y: direction === 1 ? "-100%" : "100%",
+  }),
+};
+
+function PanelSlideView<K extends string>({
+  view,
+  direction,
+  views,
+}: {
+  view: K;
+  direction: SlideDirection;
+  views: Record<K, React.ReactNode>;
+}) {
+  return (
+    <div className="relative h-full overflow-hidden">
+      <AnimatePresence initial={false} custom={direction}>
+        <motion.div
+          key={view}
+          custom={direction}
+          variants={panelSlideVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={panelSlideTransition}
+          className="absolute inset-0"
+        >
+          {views[view]}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function LeftInside() {
+  const [{ view, direction }, setNav] = useState<{
+    view: LeftPanelView;
+    direction: SlideDirection;
+  }>({ view: "menu", direction: 0 });
+
+  const navigate = useCallback((next: LeftPanelView) => {
+    setNav({ view: next, direction: next === "menu" ? -1 : 1 });
+  }, []);
+
+  return (
+    <PanelSlideView
+      view={view}
+      direction={direction}
+      views={{
+        menu: (
+          <div className="relative z-10 p-12">
+            <h3 className="mb-6 text-4xl text-amber-950">Espresso</h3>
+            <ul className="space-y-4 text-lg text-amber-900/80">
+              <li className="flex justify-between border-b border-amber-900/10 pb-3">
+                <span>Americano</span>
+                <span>$3.50</span>
+              </li>
+              <li className="flex justify-between border-b border-amber-900/10 pb-3">
+                <span>Cortado</span>
+                <span>$4.00</span>
+              </li>
+              <li className="flex justify-between border-b border-amber-900/10 pb-3">
+                <span>Flat White</span>
+                <span>$4.50</span>
+              </li>
+            </ul>
+            <PanelNavLinks
+              links={[
+                { id: "about", label: "About" },
+                { id: "blog", label: "Blog" },
+              ]}
+              onSelect={(id) => navigate(id as LeftPanelView)}
+            />
+          </div>
+        ),
+        about: (
+          <PanelTabContent
+            title="About Chai Coffee Lit"
+            body="A neighborhood cafe rooted in single-origin coffee and house-made chai. More stories coming soon."
+            onBack={() => navigate("menu")}
+          />
+        ),
+        blog: (
+          <PanelTabContent
+            title="Blog"
+            body="Notes from the bar, seasonal menus, and community updates. Check back for new posts."
+            onBack={() => navigate("menu")}
+          />
+        ),
+      }}
+    />
   );
 }
 
@@ -278,7 +439,7 @@ function CenterPanel() {
       <p className="mb-3 text-xs uppercase tracking-[0.35em] text-amber-800/60">
         Est. 2026
       </p>
-      <h2 className="font-sans text-7xl text-amber-950">Our Menu</h2>
+      <h2 className="text-7xl text-amber-950">Our Menu</h2>
       <p className="mt-5 max-w-[420px] text-lg leading-relaxed text-amber-900/70">
         Single-origin pours, house chai, and pastries baked each morning.
       </p>
@@ -287,34 +448,68 @@ function CenterPanel() {
 }
 
 function RightInside() {
+  const [{ view, direction }, setNav] = useState<{
+    view: RightPanelView;
+    direction: SlideDirection;
+  }>({ view: "menu", direction: 0 });
+
+  const navigate = useCallback((next: RightPanelView) => {
+    setNav({ view: next, direction: next === "menu" ? -1 : 1 });
+  }, []);
+
   return (
-    <div className="relative z-10 p-12">
-      <h3 className="mb-6 font-sans text-4xl text-amber-950">Chai &amp; Tea</h3>
-      <ul className="space-y-4 text-lg text-amber-900/80">
-        <li className="flex justify-between border-b border-amber-900/10 pb-3">
-          <span>Masala Chai</span>
-          <span>$4.50</span>
-        </li>
-        <li className="flex justify-between border-b border-amber-900/10 pb-3">
-          <span>Cardamom Latte</span>
-          <span>$5.00</span>
-        </li>
-        <li className="flex justify-between border-b border-amber-900/10 pb-3">
-          <span>Matcha Oat</span>
-          <span>$5.50</span>
-        </li>
-      </ul>
-    </div>
+    <PanelSlideView
+      view={view}
+      direction={direction}
+      views={{
+        menu: (
+          <div className="relative z-10 p-12">
+            <h3 className="mb-6 text-4xl text-amber-950">Chai &amp; Tea</h3>
+            <ul className="space-y-4 text-lg text-amber-900/80">
+              <li className="flex justify-between border-b border-amber-900/10 pb-3">
+                <span>Masala Chai</span>
+                <span>$4.50</span>
+              </li>
+              <li className="flex justify-between border-b border-amber-900/10 pb-3">
+                <span>Cardamom Latte</span>
+                <span>$5.00</span>
+              </li>
+              <li className="flex justify-between border-b border-amber-900/10 pb-3">
+                <span>Matcha Oat</span>
+                <span>$5.50</span>
+              </li>
+            </ul>
+            <PanelNavLinks
+              links={[
+                { id: "archive", label: "Archive" },
+                { id: "books", label: "Books" },
+              ]}
+              onSelect={(id) => navigate(id as RightPanelView)}
+            />
+          </div>
+        ),
+        archive: (
+          <PanelTabContent
+            title="Archive"
+            body="Past menus, events, and seasonal highlights from Chai Coffee Lit. More coming soon."
+            onBack={() => navigate("menu")}
+          />
+        ),
+        books: (
+          <PanelTabContent
+            title="Books"
+            body="Staff picks and reading list from our shelves. New recommendations on the way."
+            onBack={() => navigate("menu")}
+          />
+        ),
+      }}
+    />
   );
 }
 
 function RightFoldedFace() {
   return (
-    <div className="relative z-10 flex h-full items-center justify-center">
-      <p className="text-sm uppercase tracking-[0.3em] text-amber-800/40">
-        Inside fold
-      </p>
-    </div>
+    <div className="relative z-10 flex h-full items-center justify-center"></div>
   );
 }
 
@@ -369,7 +564,7 @@ function MobileBackButton({ onBack }: { onBack: () => void }) {
         e.stopPropagation();
         onBack();
       }}
-      className="absolute left-3 top-3 z-[200] touch-manipulation rounded-full bg-amber-900/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.2em] text-amber-900/80 backdrop-blur-sm"
+      className="pointer-events-auto z-[200] touch-manipulation rounded-full bg-amber-900/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.2em] text-amber-900/80 backdrop-blur-sm"
       aria-label="Back to overview"
     >
       Back
@@ -385,6 +580,7 @@ export default function TriFoldBrochure() {
   const [activePanel, setActivePanel] = useState<PanelId | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const isFirstCameraSync = useRef(true);
+  const brochureRef = useRef<HTMLDivElement>(null);
 
   const { fit, panelWidth, brochureHeight } = useBrochureSize(isMobile);
   const layoutWidth = panelWidth * (isOpen ? 3 : 1);
@@ -402,6 +598,9 @@ export default function TriFoldBrochure() {
   const chromeH = showMobileTabs ? MOBILE_TAB_HEIGHT : 0;
   const availW = width - VIEWPORT_PADDING * 2;
   const availH = height - VIEWPORT_PADDING * 2 - chromeH;
+  const focusAvailH = availH - MOBILE_FOCUS_BACK_CHROME;
+  const mobileFocusScale = Math.min(availW / panelWidth, focusAvailH / brochureHeight);
+  const mobileFocusVisibleWidth = panelWidth * mobileFocusScale;
 
   const syncCamera = useCallback(
     (view: MobileView, panel: PanelId | null, animateCamera = true) => {
@@ -494,6 +693,22 @@ export default function TriFoldBrochure() {
     setActivePanel(null);
   }, [isAnimating, startAnimationGuard]);
 
+  useEffect(() => {
+    if (isMobile || !isOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        brochureRef.current &&
+        !brochureRef.current.contains(event.target as Node)
+      ) {
+        closeBrochure();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isMobile, isOpen, closeBrochure]);
+
   const selectPanel = useCallback(
     (panel: PanelId) => {
       if (isAnimating) return;
@@ -509,7 +724,11 @@ export default function TriFoldBrochure() {
     setActivePanel(null);
   }, [isAnimating]);
 
-  const toggle = () => setIsOpen((open) => !open);
+  const handleDesktopBrochureClick = () => {
+    if (!isOpen) {
+      openBrochure();
+    }
+  };
 
   const handleMobileTap = () => {
     if (mobileView === "cover") {
@@ -521,24 +740,41 @@ export default function TriFoldBrochure() {
 
   const brochureScene = (
     <div
+    ref={brochureRef}
     className="relative mx-auto touch-manipulation"
-    onClick={isMobile && mobileView !== "focus" ? handleMobileTap : undefined}
-    role={isMobile && mobileView !== "focus" ? "button" : undefined}
-    tabIndex={isMobile && mobileView !== "focus" ? 0 : undefined}
-    aria-expanded={isMobile ? isOpen : undefined}
+    onClick={
+      isMobile
+        ? mobileView !== "focus"
+          ? handleMobileTap
+          : undefined
+        : !isOpen
+          ? handleDesktopBrochureClick
+          : undefined
+    }
+    role={
+      (isMobile && mobileView !== "focus") || (!isMobile && !isOpen)
+        ? "button"
+        : undefined
+    }
+    tabIndex={
+      (isMobile && mobileView !== "focus") || (!isMobile && !isOpen) ? 0 : undefined
+    }
+    aria-expanded={isMobile || !isOpen ? isOpen : undefined}
     aria-label={
       isMobile
         ? mobileView === "cover"
           ? "Open brochure"
           : "Close brochure"
-        : undefined
+        : !isOpen
+          ? "Open brochure"
+          : undefined
     }
     style={{
       width: layoutWidth,
       height: brochureHeight,
       transition: `width ${WING_DURATION}s ${sizeEase}`,
       WebkitTapHighlightColor: "transparent",
-      cursor: isMobile ? "pointer" : undefined,
+      cursor: isMobile || !isOpen ? "pointer" : undefined,
     }}
   >
       <div
@@ -606,21 +842,6 @@ export default function TriFoldBrochure() {
           </motion.div>
         </div>
       </div>
-
-      {!isMobile && (
-          <button
-          type="button"
-          onClick={toggle}
-          aria-expanded={isOpen}
-          aria-label={isOpen ? "Close brochure" : "Open brochure"}
-          className="absolute inset-0 z-[100] touch-manipulation border-0 p-0"
-          style={{
-            backgroundColor: "rgba(0,0,0,0.01)",
-            WebkitTapHighlightColor: "transparent",
-            cursor: "pointer",
-          }}
-        />
-      )}
     </div>
   );
 // Edit : Added build version to the mobile view 
@@ -628,21 +849,40 @@ export default function TriFoldBrochure() {
     return (
       
       <div className="relative flex w-full max-w-full flex-col items-center justify-center overflow-hidden">
-        {mobileView === "focus" && <MobileBackButton onBack={backToOverview} />}
-
-      <div className="relative flex w-full flex-1 items-center justify-center overflow-hidden"
+        <div
+          className={`relative flex w-full flex-1 overflow-hidden ${
+            mobileView === "focus"
+              ? "flex-col items-center"
+              : "items-center justify-center"
+          }`}
           style={{ minHeight: availH }}
         >
-          <motion.div
-            style={{
-              scale: cameraScale,
-              x: cameraX,
-              y: cameraY,
-            }}
-            className="origin-center"
+          {mobileView === "focus" && (
+            <div
+              className="mb-[10px] flex shrink-0 justify-start"
+              style={{ width: mobileFocusVisibleWidth }}
+            >
+              <MobileBackButton onBack={backToOverview} />
+            </div>
+          )}
+          <div
+            className={
+              mobileView === "focus"
+                ? "flex min-h-0 w-full flex-1 items-center justify-center"
+                : "contents"
+            }
           >
-            {brochureScene}
-          </motion.div>
+            <motion.div
+              style={{
+                scale: cameraScale,
+                x: cameraX,
+                y: cameraY,
+              }}
+              className="origin-center"
+            >
+              {brochureScene}
+            </motion.div>
+          </div>
         </div>
 
         {showMobileTabs && (
