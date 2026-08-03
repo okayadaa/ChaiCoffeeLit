@@ -26,10 +26,33 @@ export const panelSlideTransition = {
   ease: [0.4, 0, 0.2, 1] as const,
 };
 
+export const PANEL_BG_COLOR = "#F9FAFB";
+
 export const PAPER_STYLE = {
-  backgroundImage:
-    "linear-gradient(160deg, rgba(255,255,255,0.5) 0%, transparent 40%), linear-gradient(to bottom, #faf6ee, #f0e6d3)",
+  backgroundColor: PANEL_BG_COLOR,
 } as const;
+
+/** Paper grain overlay tiled on panel faces. */
+export const PAPER_TEXTURE = {
+  opacity: 0.55,
+  blendMode: "multiply" as const,
+} as const;
+
+/** Cross-section color for pseudo-3D paper edges (top light → shadow → bottom). */
+export const PAPER_EDGE = {
+  width: 4,
+  highlight: "#f0e8d8",
+  face: "#ddd0b8",
+  shadow: "#a89578",
+} as const;
+
+/** Unified overhead light from upper-left — kept soft so folds stay dark. */
+export const PAPER_RIM_HIGHLIGHT =
+  "linear-gradient(175deg, rgba(255,250,240,0.28) 0%, transparent 18%)";
+
+/** Directional shade: darker toward bottom-right, sells panel curvature. */
+export const PAPER_PANEL_SHADE =
+  "linear-gradient(145deg, transparent 40%, rgba(55,38,20,0.09) 100%)";
 
 export const PANELS = [
   { id: "left", label: "Left" },

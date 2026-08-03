@@ -34,10 +34,10 @@ export function RightInside() {
             onSelect={(id) => navigate(id as RightPanelView)}
           />
         ),
-        archive: (
+        blog: (
           <PanelTabContent
-            title={rightPanelPages.archive.title}
-            body={rightPanelPages.archive.body}
+            title={rightPanelPages.blog.title}
+            body={rightPanelPages.blog.body}
             onBack={() => navigate("menu")}
           />
         ),

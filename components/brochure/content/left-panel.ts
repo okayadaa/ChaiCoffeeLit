@@ -11,16 +11,16 @@ export const leftPanelMenu = {
 
 export const leftPanelNavLinks = [
   { id: "about", label: "About" },
-  { id: "blog", label: "Blog" },
+  { id: "archive", label: "Archive" },
 ] satisfies PanelNavLink[];
 
 export const leftPanelPages = {
   about: {
-    title: "About Chai Coffee Lit",
+    title: "About Page",
     body: "A neighborhood cafe rooted in single-origin coffee and house-made chai. More stories coming soon.",
   },
-  blog: {
-    title: "Blog",
-    body: "Notes from the bar, seasonal menus, and community updates. Check back for new posts.",
+  archive: {
+    title: "Archive",
+    body: "Past menus, events, and seasonal highlights from Chai Coffee Lit. More coming soon.",
   },
 } satisfies Record<string, PanelPageContent>;

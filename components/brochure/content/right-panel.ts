@@ -10,14 +10,14 @@ export const rightPanelMenu = {
 };
 
 export const rightPanelNavLinks = [
-  { id: "archive", label: "Archive" },
+  { id: "blog", label: "Blog" },
   { id: "books", label: "Books" },
 ] satisfies PanelNavLink[];
 
 export const rightPanelPages = {
-  archive: {
-    title: "Archive",
-    body: "Past menus, events, and seasonal highlights from Chai Coffee Lit. More coming soon.",
+  blog: {
+    title: "Blog",
+    body: "Notes from the bar, seasonal menus, and community updates. Check back for new posts.",
   },
   books: {
     title: "Books",

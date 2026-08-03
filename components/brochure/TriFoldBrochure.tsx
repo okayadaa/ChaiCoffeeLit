@@ -233,16 +233,33 @@ export default function TriFoldBrochure() {
       }}
     >
       <div
-        className="absolute inset-0 flex justify-center [perspective:2100px]"
+        className="absolute inset-0 flex justify-center [perspective:1400px]"
         aria-hidden="true"
       >
         <div
-          className="relative overflow-visible rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.28)] [transform-style:preserve-3d]"
-          style={{
-            width: panelWidth,
-            height: brochureHeight,
-          }}
+          className="relative [transform-style:preserve-3d]"
+          style={{ transform: "rotateX(3.2deg) rotateY(-1.2deg)" }}
         >
+          {/* Contact shadow — grounds brochure on the surface */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute left-1/2 z-0 -translate-x-1/2"
+            style={{
+              bottom: -14,
+              width: "92%",
+              height: 36,
+              background:
+                "radial-gradient(ellipse at center, rgba(35,22,10,0.48) 0%, rgba(35,22,10,0.14) 50%, transparent 72%)",
+              filter: "blur(8px)",
+            }}
+          />
+          <div
+            className="relative overflow-visible rounded-sm shadow-[0_22px_55px_rgba(0,0,0,0.32),0_8px_20px_rgba(0,0,0,0.18)] [transform-style:preserve-3d]"
+            style={{
+              width: panelWidth,
+              height: brochureHeight,
+            }}
+          >
           <div
             className="absolute top-0 z-[5] h-full overflow-hidden rounded-sm"
             style={{
@@ -251,7 +268,7 @@ export default function TriFoldBrochure() {
               transform: `translateX(-${panelWidth / 2}px)`,
             }}
           >
-            <PanelFace fit={fit} className="rounded-sm">
+            <PanelFace fit={fit} variant="center" className="rounded-sm">
               <CenterPanel />
             </PanelFace>
             {isOpen && <Crease side="left" />}
@@ -266,12 +283,13 @@ export default function TriFoldBrochure() {
               x: panelWidth / 2,
               rotateY: rightRotate,
               boxShadow: rightShadow,
+              translateZ: 2,
             }}
           >
             <PanelFace fit={fit} className="rounded-sm">
               <RightInside />
             </PanelFace>
-            <PanelFace fit={fit} flip className="rounded-sm">
+            <PanelFace fit={fit} flip className="rounded-sm" outerEdge="right">
               <RightFoldedFace />
             </PanelFace>
             {isOpen && <Crease side="left" />}
@@ -285,16 +303,18 @@ export default function TriFoldBrochure() {
               x: -(panelWidth * 1.5),
               rotateY: leftRotate,
               boxShadow: leftShadow,
+              translateZ: 2,
             }}
           >
             <PanelFace fit={fit} className="rounded-sm">
               <LeftInside />
             </PanelFace>
-            <PanelFace fit={fit} flip className="rounded-sm">
+            <PanelFace fit={fit} flip className="rounded-sm" outerEdge="left">
               <BackCover />
             </PanelFace>
             {isOpen && <Crease side="right" />}
           </motion.div>
+          </div>
         </div>
       </div>
     </div>

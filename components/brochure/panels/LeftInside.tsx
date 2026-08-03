@@ -41,10 +41,10 @@ export function LeftInside() {
             onBack={() => navigate("menu")}
           />
         ),
-        blog: (
+        archive: (
           <PanelTabContent
-            title={leftPanelPages.blog.title}
-            body={leftPanelPages.blog.body}
+            title={leftPanelPages.archive.title}
+            body={leftPanelPages.archive.body}
             onBack={() => navigate("menu")}
           />
         ),
