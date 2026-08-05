@@ -34,8 +34,19 @@ export default function TriFoldBrochure() {
   const [mobileView, setMobileView] = useState<MobileView>("cover");
   const [activePanel, setActivePanel] = useState<PanelId | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [prevIsMobile, setPrevIsMobile] = useState(isMobile);
   const isFirstCameraSync = useRef(true);
   const brochureRef = useRef<HTMLDivElement>(null);
+
+  if (isMobile !== prevIsMobile) {
+    setPrevIsMobile(isMobile);
+    if (!isMobile) {
+      setMobileView("cover");
+      setActivePanel(null);
+    } else if (isOpen) {
+      setMobileView("overview");
+    }
+  }
 
   const { fit, panelWidth, brochureHeight } = useBrochureSize(isMobile);
   const layoutWidth = panelWidth * (isOpen ? 3 : 1);
@@ -108,25 +119,6 @@ export default function TriFoldBrochure() {
     isFirstCameraSync.current = false;
   }, [isMobile, mobileView, activePanel, syncCamera]);
 
-  useEffect(() => {
-    if (!isMobile) return;
-    if (isOpen && mobileView === "cover") {
-      setMobileView("overview");
-    }
-    if (!isOpen && mobileView !== "cover") {
-      setMobileView("cover");
-      setActivePanel(null);
-    }
-  }, [isMobile, isOpen, mobileView]);
-
-  useEffect(() => {
-    if (isMobile) return;
-    if (isOpen || mobileView !== "cover") {
-      setMobileView("cover");
-      setActivePanel(null);
-    }
-  }, [isMobile, isOpen, mobileView]);
-
   const startAnimationGuard = useCallback(() => {
     setIsAnimating(true);
     window.setTimeout(() => setIsAnimating(false), WING_DURATION * 1000 * 2);
@@ -136,9 +128,9 @@ export default function TriFoldBrochure() {
     if (isAnimating) return;
     startAnimationGuard();
     setIsOpen(true);
-    setMobileView("overview");
+    setMobileView(isMobile ? "overview" : "cover");
     setActivePanel(null);
-  }, [isAnimating, startAnimationGuard]);
+  }, [isAnimating, startAnimationGuard, isMobile]);
 
   const closeBrochure = useCallback(() => {
     if (isAnimating) return;
