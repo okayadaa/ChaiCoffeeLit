@@ -13,6 +13,7 @@
   --font-mono: var(--font-share-tech-mono);
   --font-norwester: "Norwester", sans-serif;
   --font-brochure: var(--font-space-mono), monospace;
+  --font-journal: var(--font-newsreader), "Newsreader", serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -26,4 +27,19 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-share-tech-mono), monospace;
+}
+
+@keyframes journal-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.6rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.journal-article {
+  animation: journal-fade-up 0.55s ease-out both;
 }

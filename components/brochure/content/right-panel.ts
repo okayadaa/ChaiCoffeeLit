@@ -15,10 +15,6 @@ export const rightPanelNavLinks = [
 ] satisfies PanelNavLink[];
 
 export const rightPanelPages = {
-  blog: {
-    title: "Blog",
-    body: "Notes from the bar, seasonal menus, and community updates. Check back for new posts.",
-  },
   books: {
     title: "Books",
     body: "Staff picks and reading list from our shelves. New recommendations on the way.",
