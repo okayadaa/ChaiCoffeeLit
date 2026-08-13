@@ -26,8 +26,15 @@ import { RightInside } from "./panels/RightInside";
 import type { MobileView, PanelId } from "./types";
 import { Crease } from "./ui/Crease";
 import { PanelFace } from "./ui/PanelFace";
+import type { BlogListPost } from "@/lib/blog/types";
 
-export default function TriFoldBrochure() {
+type TriFoldBrochureProps = {
+  posts: BlogListPost[];
+};
+
+export default function TriFoldBrochure({
+  posts,
+}: TriFoldBrochureProps) {
   const isMobile = useIsMobile();
   const { width, height } = useViewportSize();
   const [isOpen, setIsOpen] = useState(false);
@@ -279,7 +286,7 @@ export default function TriFoldBrochure() {
             }}
           >
             <PanelFace fit={fit} className="rounded-sm">
-              <RightInside />
+              <RightInside posts={posts} />
             </PanelFace>
             <PanelFace fit={fit} flip className="rounded-sm" outerEdge="right">
               <RightFoldedFace />

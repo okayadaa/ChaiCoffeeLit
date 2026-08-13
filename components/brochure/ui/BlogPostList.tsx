@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { formatPostDate } from "@/lib/blog/format";
-import type { Post } from "@/lib/blog/types";
+import type { BlogListPost } from "@/lib/blog/types";
 
-export function BlogPostList({ posts }: { posts: Post[] }) {
+export function BlogPostList({
+  posts,
+}: {
+  posts: BlogListPost[];
+}) {
   if (posts.length === 0) {
     return (
       <p className="text-lg leading-relaxed text-amber-900/70">
