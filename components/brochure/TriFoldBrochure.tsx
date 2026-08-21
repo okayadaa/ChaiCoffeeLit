@@ -30,16 +30,18 @@ import type { BlogListPost } from "@/lib/blog/types";
 
 type TriFoldBrochureProps = {
   posts: BlogListPost[];
+  initialPanel?: "blog";
 };
 
 export default function TriFoldBrochure({
   posts,
+  initialPanel,
 }: TriFoldBrochureProps) {
   const isMobile = useIsMobile();
   const { width, height } = useViewportSize();
-  const [isOpen, setIsOpen] = useState(false);
-  const [mobileView, setMobileView] = useState<MobileView>("cover");
-  const [activePanel, setActivePanel] = useState<PanelId | null>(null);
+  const [isOpen, setIsOpen] = useState(initialPanel === "blog");
+  const [mobileView, setMobileView] = useState<MobileView>(initialPanel === "blog" ? "focus" : "cover",);
+  const [activePanel, setActivePanel] = useState<PanelId | null>(initialPanel === "blog" ? "right" : null,);
   const [isAnimating, setIsAnimating] = useState(false);
   const [prevIsMobile, setPrevIsMobile] = useState(isMobile);
   const isFirstCameraSync = useRef(true);
@@ -286,7 +288,10 @@ export default function TriFoldBrochure({
             }}
           >
             <PanelFace fit={fit} className="rounded-sm">
-              <RightInside posts={posts} />
+              <RightInside 
+              posts={posts}
+              initialView={initialPanel === "blog" ? "blog" : "menu"}
+              />
             </PanelFace>
             <PanelFace fit={fit} flip className="rounded-sm" outerEdge="right">
               <RightFoldedFace />

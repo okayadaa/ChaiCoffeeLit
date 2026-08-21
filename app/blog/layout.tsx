@@ -1,9 +1,16 @@
-import { Newsreader } from "next/font/google";
+import { EB_Garamond, Newsreader } from "next/font/google";
 import Link from "next/link";
 
 const newsreader = Newsreader({
   subsets: ["latin"],
   variable: "--font-newsreader",
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+});
+
+const ebGaramond = EB_Garamond({
+  subsets: ["latin"],
+  variable: "--font-garamond",
   weight: ["400", "500", "600"],
   style: ["normal", "italic"],
 });
@@ -15,7 +22,7 @@ export default function BlogLayout({
 }) {
   return (
     <div
-      className={`${newsreader.variable} flex min-h-full flex-1 flex-col bg-[#f3f4f6] text-[#1c1b19]`}
+      className={`${newsreader.variable} ${ebGaramond.variable} flex min-h-full flex-1 flex-col bg-[#f3f4f6] text-[#1c1b19]`}
     >
       <header className="px-6 pt-10 sm:px-10 sm:pt-14">
         <div className="mx-auto w-full max-w-2xl">

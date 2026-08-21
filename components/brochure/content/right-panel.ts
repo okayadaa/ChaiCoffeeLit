@@ -1,13 +1,4 @@
-import type { MenuItem, PanelNavLink, PanelPageContent } from "../types";
-
-export const rightPanelMenu = {
-  title: "Chai & Tea",
-  items: [
-    { name: "Masala Chai", price: "$4.50" },
-    { name: "Cardamom Latte", price: "$5.00" },
-    { name: "Matcha Oat", price: "$5.50" },
-  ] satisfies MenuItem[],
-};
+import type { PanelNavLink, PanelPageContent } from "../types";
 
 export const rightPanelNavLinks = [
   { id: "blog", label: "Blog" },

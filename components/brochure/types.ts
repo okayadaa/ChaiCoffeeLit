@@ -9,11 +9,6 @@ export type PanelNavLink = {
   label: string;
 };
 
-export type MenuItem = {
-  name: string;
-  price: string;
-};
-
 export type PanelPageContent = {
   title: string;
   body: string;

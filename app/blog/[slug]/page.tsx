@@ -3,12 +3,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatPostDate } from "@/lib/blog/format";
 import type { BlogListPost } from "@/lib/blog/types";
+import { sanityFetch } from "@/sanity/lib/live";
 import { client } from "@/sanity/lib/client";
 import {
   POSTS_QUERY,
   POST_BY_SLUG_QUERY,
 } from "@/sanity/lib/queries";
-import { PortableText } from "@portabletext/react";
+import { PortableTextRenderer } from "@/components/blog/PortableTextRenderer";
 
 
 type BlogArticlePageProps = {
@@ -28,9 +29,19 @@ export async function generateMetadata({
 }: BlogArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  const post = await client.fetch(POST_BY_SLUG_QUERY, {
-    slug,
+  const { data } = await sanityFetch({
+    query: POST_BY_SLUG_QUERY,
+    params: { slug },
   });
+  
+  const post = data as {
+    title: string;
+    slug: string;
+    category: string;
+    publishedAt: string;
+    excerpt?: string;
+    body: Parameters<typeof PortableTextRenderer>[0]["value"];
+  } | null;
 
   if (!post) {
     return {
@@ -49,30 +60,47 @@ export default async function BlogArticlePage({
 }: BlogArticlePageProps) {
   const { slug } = await params;
 
-  const post = await client.fetch(POST_BY_SLUG_QUERY, {
-    slug,
+  const { data } = await sanityFetch({
+    query: POST_BY_SLUG_QUERY,
+    params: { slug },
   });
+  
+  const post = data as {
+    title: string;
+    slug: string;
+    category: string;
+    publishedAt: string;
+    excerpt?: string;
+    body: Parameters<typeof PortableTextRenderer>[0]["value"];
+  } | null;
 
   if (!post) {
     notFound();
   }
 
   return (
-    <article className="journal-article mx-auto w-full max-w-2xl">
+    <article className="journal-article mx-auto w-full max-w-2xl py-8 sm:py-12">
       <p className="font-brochure text-xs uppercase tracking-[0.22em] text-[#8a7f70]">
         {post.category} · {formatPostDate(post.publishedAt)}
       </p>
-      <h1 className="mt-5 font-journal text-4xl leading-tight tracking-tight text-[#1c1b19] sm:text-5xl">
+      <h1 className="mt-5 max-w-xl font-journal text-4xl leading-[1.05] tracking-tight text-[#1c1b19] sm:text-5xl">
         {post.title}
       </h1>
-      <div className="mt-12 font-journal text-lg leading-relaxed text-[#3a3630] sm:text-xl sm:leading-relaxed">
-  <PortableText value={post.body} />
+
+      {post.excerpt && (
+        <p className="mt-6 font-brochure text-xs uppercase tracking-[0.22em] text-[#8a7f70]">
+        {post.excerpt}
+      </p>
+      )}
+
+      <div className="mt-10 border-t border-[#8a7f70]/20 pt-10 font-article text-xl">
+        <PortableTextRenderer value={post.body} />
       </div>
       <Link
-        href="/"
+        href="/?panel=blog" 
         className="mt-16 inline-block font-brochure text-xs uppercase tracking-[0.22em] text-[#8a7f70] transition-colors hover:text-[#1c1b19]"
       >
-        ← Café
+        ← Back to Blog 
       </Link>
     </article>
   );

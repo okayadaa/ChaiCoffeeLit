@@ -3,6 +3,7 @@ export type BlogListPost = {
   slug: string;
   category: string;
   publishedAt: string;
+  excerpt?: string;
 };
 
 export type Post = BlogListPost & {

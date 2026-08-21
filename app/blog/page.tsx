@@ -1,9 +1,14 @@
 import {BlogPostList} from "@/components/brochure/ui/BlogPostList";
-import {client} from "@/sanity/lib/client";
+import { sanityFetch } from "@/sanity/lib/live";
 import {POSTS_QUERY} from "@/sanity/lib/queries";
+import type { BlogListPost } from "@/lib/blog/types";
 
 export default async function BlogPage() {
-  const posts = await client.fetch(POSTS_QUERY);
+  const { data } = await sanityFetch({
+    query: POSTS_QUERY,
+  });
+
+  const posts = data as BlogListPost[];
 
   return (
     <div className="mx-auto w-full max-w-2xl">

@@ -1,11 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import {
-  leftPanelMenu,
-  leftPanelNavLinks,
-  leftPanelPages,
-} from "../content/left-panel";
+import { leftPanelNavLinks, leftPanelPages } from "../content/left-panel";
 import type { LeftPanelView, SlideDirection } from "../types";
 import { PanelMenu } from "../ui/PanelMenu";
 import { PanelSlideView } from "../ui/PanelSlideView";
@@ -28,8 +24,6 @@ export function LeftInside() {
       views={{
         menu: (
           <PanelMenu
-            title={leftPanelMenu.title}
-            items={leftPanelMenu.items}
             navLinks={leftPanelNavLinks}
             onSelect={(id) => navigate(id as LeftPanelView)}
           />

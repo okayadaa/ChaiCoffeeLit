@@ -6,7 +6,7 @@ export function PanelBackButton({ onBack }: { onBack: () => void }) {
         e.stopPropagation();
         onBack();
       }}
-      className="mb-8 touch-manipulation text-xs font-medium uppercase tracking-[0.2em] text-amber-900/70 transition-colors hover:text-amber-950"
+      className="mb-8 cursor-pointer touch-manipulation text-xs font-medium uppercase tracking-[0.2em] text-[#333333]"
       aria-label="Home"
     >
       Home

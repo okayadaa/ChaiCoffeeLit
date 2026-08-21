@@ -10,7 +10,7 @@ export function FaceContent({
 }) {
   return (
     <div
-      className="origin-top-left font-brochure"
+      className="origin-top-left font-brochure text-[#333333]"
       style={{
         width: BASE_PANEL_WIDTH,
         height: BASE_BROCHURE_HEIGHT,

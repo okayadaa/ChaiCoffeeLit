@@ -13,7 +13,10 @@
   --font-mono: var(--font-share-tech-mono);
   --font-norwester: "Norwester", sans-serif;
   --font-brochure: var(--font-space-mono), monospace;
+  --font-play-heading: var(--font-play), sans-serif;
+  --font-cover: var(--font-cyberpunk), sans-serif;
   --font-journal: var(--font-newsreader), "Newsreader", serif;
+  --font-article: var(--font-garamond), "EB Garamond", Garamond, serif;
 }
 
 @media (prefers-color-scheme: dark) {

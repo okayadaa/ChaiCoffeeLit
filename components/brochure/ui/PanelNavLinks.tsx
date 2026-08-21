@@ -8,26 +8,24 @@ export function PanelNavLinks({
   onSelect: (id: string) => void;
 }) {
   return (
-    <div className="mt-17">
-      <ul className="space-y-4 text-lg text-amber-900/80">
-        {links.map((link) => (
-          <li
-            key={link.id}
-            className="border-b border-amber-900/10 pb-3 pl-6"
+    <ul className="space-y-4 text-center text-[33px] text-[#333333]">
+      {links.map((link) => (
+        <li
+          key={link.id}
+          className="border-b border-amber-900/10 pb-3"
+        >
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(link.id);
+            }}
+            className="w-full cursor-pointer touch-manipulation font-bold text-[#333333] [text-shadow:0_0_6px_#007BFF,0_0_14px_#1B365D,0_0_24px_#1B365D] transition-colors hover:text-[#000080]"
           >
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelect(link.id);
-              }}
-              className="w-full touch-manipulation text-left transition-colors hover:text-white"
-            >
-              {link.label}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+            {link.label}
+          </button>
+        </li>
+      ))}
+    </ul>
   );
 }

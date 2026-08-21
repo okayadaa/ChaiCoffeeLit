@@ -27,8 +27,8 @@ export function MobilePanelTabs({
           }}
           className={`touch-manipulation rounded-full px-5 py-2 text-xs font-medium uppercase tracking-[0.2em] transition-colors ${
             activePanel === id
-              ? "bg-amber-900 text-amber-50"
-              : "bg-amber-900/10 text-amber-900/70 hover:bg-amber-900/20"
+              ? "bg-amber-900/20 text-[#333333]"
+              : "bg-amber-900/10 text-[#333333] hover:bg-amber-900/20"
           }`}
         >
           {label}

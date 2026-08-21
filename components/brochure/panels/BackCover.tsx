@@ -10,14 +10,14 @@ export function BackCover() {
         className="mb-[-65px] h-92 w-92 object-contain"
         priority
       />
-      <p className="font-norwester text-[25px] uppercase tracking-[0.4em] text-amber-800/70">
-        Chai Coffee Lit
+      <p className="font-cover text-[29px] uppercase tracking-[0.4em] text-[#333333]">
+        CHAI COFFEE LIT
       </p>
-      <p className="mt-6 max-w-[390px] text-lg leading-relaxed text-amber-900/70">
-        Open daily 7am – 7pm
+      <p className="font-play-heading mt-6 max-w-[390px] text-lg leading-relaxed text-[#333333]">
+        Open daily 7am - 7pm
       </p>
-      <p className="mt-10 text-xs uppercase tracking-[0.3em] text-amber-800/50">
-        Tap to open
+      <p className="font-play-heading mt-10 text-xs uppercase tracking-[0.3em] text-[#333333]">
+        TAP TO OPEN
       </p>
     </div>
   );
