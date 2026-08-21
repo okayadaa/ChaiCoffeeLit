@@ -7,7 +7,7 @@ export const leftPanelNavLinks = [
 
 export const leftPanelPages = {
   about: {
-    title: "About Page",
+    title: "About",
     body: "A neighborhood cafe rooted in single-origin coffee and house-made chai. More stories coming soon.",
   },
   archive: {

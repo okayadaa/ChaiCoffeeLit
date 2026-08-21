@@ -8,6 +8,7 @@ import { PanelBackButton } from "../ui/PanelBackButton";
 import { PanelMenu } from "../ui/PanelMenu";
 import { PanelSlideView } from "../ui/PanelSlideView";
 import { PanelTabContent } from "../ui/PanelTabContent";
+import { ScrambleText } from "../ui/ScrambleText";
 import type { BlogListPost } from "@/lib/blog/types"; 
 import Link from "next/link";
 
@@ -43,7 +44,9 @@ export function RightInside({
         blog: (
           <div className="relative z-10 p-12">
             <PanelBackButton onBack={() => navigate("menu")} />
-            <h3 className="mb-8 text-4xl text-[#333333]">Blog</h3>
+            <h3 className="mb-8 text-4xl text-[#333333]">
+              <ScrambleText text="Blog" />
+            </h3>
             <div className="max-h-[420px] overflow-y-auto pr-2">
               <BlogPostList posts={posts.slice(0, 6)} />
             </div>
