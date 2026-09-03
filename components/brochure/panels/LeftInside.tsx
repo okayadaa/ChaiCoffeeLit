@@ -6,8 +6,14 @@ import type { LeftPanelView, SlideDirection } from "../types";
 import { PanelMenu } from "../ui/PanelMenu";
 import { PanelSlideView } from "../ui/PanelSlideView";
 import { PanelTabContent } from "../ui/PanelTabContent";
+import type { Participant } from "@/lib/about/types";
+import { AboutPanel } from "@/components/about/AboutPanel";
 
-export function LeftInside() {
+export function LeftInside({
+  participants,
+}: {
+  participants: Participant[];
+}) {
   const [{ view, direction }, setNav] = useState<{
     view: LeftPanelView;
     direction: SlideDirection;
@@ -29,9 +35,8 @@ export function LeftInside() {
           />
         ),
         about: (
-          <PanelTabContent
-            title={leftPanelPages.about.title}
-            body={leftPanelPages.about.body}
+          <AboutPanel
+            participants={participants}
             onBack={() => navigate("menu")}
           />
         ),

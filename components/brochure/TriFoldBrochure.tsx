@@ -27,14 +27,17 @@ import type { MobileView, PanelId } from "./types";
 import { Crease } from "./ui/Crease";
 import { PanelFace } from "./ui/PanelFace";
 import type { BlogListPost } from "@/lib/blog/types";
+import type { Participant } from "@/lib/about/types";
 
 type TriFoldBrochureProps = {
   posts: BlogListPost[];
+  participants: Participant[];
   initialPanel?: "blog";
 };
 
 export default function TriFoldBrochure({
   posts,
+  participants,
   initialPanel,
 }: TriFoldBrochureProps) {
   const isMobile = useIsMobile();
@@ -311,7 +314,7 @@ export default function TriFoldBrochure({
             }}
           >
             <PanelFace fit={fit} className="rounded-sm">
-              <LeftInside />
+            <LeftInside participants={participants} />
             </PanelFace>
             <PanelFace fit={fit} flip className="rounded-sm" outerEdge="left">
               <BackCover />

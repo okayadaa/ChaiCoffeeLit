@@ -49,3 +49,20 @@ export const POSTS_BY_CATEGORY_QUERY = defineQuery(`
       excerpt
     }
   `);
+
+export const PARTICIPANTS_QUERY = defineQuery(`
+    *[
+      _type == "participant" &&
+      defined(name) &&
+      defined(role) &&
+      defined(bio) &&
+      defined(image)
+    ] | order(order asc) {
+      _id,
+      name,
+      role,
+      bio,
+      image,
+      order
+    }
+  `);

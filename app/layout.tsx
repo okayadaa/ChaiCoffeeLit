@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
 import {
   cyberpunk,
   orbitron,
@@ -8,6 +10,8 @@ import {
 } from "./fonts";
 import "./globals.css";
 import { SanityLive } from "@/sanity/lib/live";
+
+config.autoAddCss = false;
 
 export const metadata: Metadata = {
   title: "Chai Coffee Lit",
