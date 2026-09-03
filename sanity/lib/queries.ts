@@ -66,3 +66,14 @@ export const PARTICIPANTS_QUERY = defineQuery(`
       order
     }
   `);
+
+export const BOOKS_QUERY = defineQuery(`
+    *[_type == "book"]
+    | order(recommendedAt desc) {
+      _id,
+      title,
+      author,
+      coverImage,
+      recommendedAt
+    }
+  `)
