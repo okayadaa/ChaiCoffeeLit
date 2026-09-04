@@ -27,7 +27,7 @@ export default function BlogLayout({
       <header className="px-6 pt-10 sm:px-10 sm:pt-14">
         <div className="mx-auto w-full max-w-2xl">
           <Link
-            href="/"
+            href="/?panel=blog"
             className="font-norwester text-3xl tracking-wide text-[#1c1b19] transition-opacity hover:opacity-70 sm:text-4xl"
           >
             Chai Coffee Lit

@@ -1,24 +1,27 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { rightPanelNavLinks, rightPanelPages } from "../content/right-panel";
+import { rightPanelNavLinks } from "../content/right-panel";
 import type { RightPanelView, SlideDirection } from "../types";
 import { BlogPostList } from "../ui/BlogPostList";
 import { PanelBackButton } from "../ui/PanelBackButton";
 import { PanelMenu } from "../ui/PanelMenu";
 import { PanelSlideView } from "../ui/PanelSlideView";
-import { PanelTabContent } from "../ui/PanelTabContent";
 import { ScrambleText } from "../ui/ScrambleText";
 import type { BlogListPost } from "@/lib/blog/types"; 
 import Link from "next/link";
+import type {Book} from "@/lib/books/types";
+import {BookShelf} from "@/components/books/BookShelf";
 
 type RightInsideProps = {
   posts: BlogListPost[];
+  books: Book[];
   initialView?: RightPanelView;
 };
 
 export function RightInside({
   posts,
+  books,
   initialView = "menu",
 }: RightInsideProps) {
   const [{ view, direction }, setNav] = useState<{
@@ -60,11 +63,33 @@ export function RightInside({
           </div>
         ),
         books: (
-          <PanelTabContent
-            title={rightPanelPages.books.title}
-            body={rightPanelPages.books.body}
-            onBack={() => navigate("menu")}
-          />
+          <div className="relative z-10 flex h-full flex-col p-12">
+            <PanelBackButton onBack={() => navigate("menu")} />
+
+            <h3 className="mb-8 text-4xl text-[#333333]">
+              <ScrambleText text="Books" />
+            </h3>
+
+            <div className="min-h-0 flex-1 overflow-y-auto pr-2">
+              {books.length === 0 ? (
+                <p className="text-sm text-[#333333]">
+                  No book recommendations yet.
+                </p>
+              ) : (
+                <BookShelf
+                  books={books.slice(0, 9)}
+                  variant="compact"
+                />
+              )}
+            </div>
+
+            <Link
+              href="/books"
+              className="mt-6 inline-block text-sm text-blue-500 underline underline-offset-4 hover:text-blue-600"
+            >
+              View all books →
+            </Link>
+          </div>
         ),
       }}
     />

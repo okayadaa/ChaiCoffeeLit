@@ -11,16 +11,12 @@ export default async function BooksPage() {
   const books = data as Book[]
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-10">
-      <h1 className="mb-8 text-3xl font-semibold">
-        Books
-      </h1>
-
+    <div className="mx-auto w-full max-w-6xl">
       {books.length === 0 ? (
         <p>No book recommendations yet.</p>
       ) : (
         <BookShelf books={books} />
       )}
-    </main>
+    </div>
   );
 }

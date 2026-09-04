@@ -28,23 +28,27 @@ import { Crease } from "./ui/Crease";
 import { PanelFace } from "./ui/PanelFace";
 import type { BlogListPost } from "@/lib/blog/types";
 import type { Participant } from "@/lib/about/types";
+import type {Book} from "@/lib/books/types";
 
 type TriFoldBrochureProps = {
   posts: BlogListPost[];
   participants: Participant[];
-  initialPanel?: "blog";
+  books: Book[];
+  initialPanel?: "blog" | "books";
 };
 
 export default function TriFoldBrochure({
   posts,
   participants,
+  books,
   initialPanel,
 }: TriFoldBrochureProps) {
+  const startsOnRight = initialPanel === "blog" || initialPanel === "books";
   const isMobile = useIsMobile();
   const { width, height } = useViewportSize();
-  const [isOpen, setIsOpen] = useState(initialPanel === "blog");
-  const [mobileView, setMobileView] = useState<MobileView>(initialPanel === "blog" ? "focus" : "cover",);
-  const [activePanel, setActivePanel] = useState<PanelId | null>(initialPanel === "blog" ? "right" : null,);
+  const [isOpen, setIsOpen] = useState(startsOnRight);
+  const [mobileView, setMobileView] = useState<MobileView>(startsOnRight ? "focus" : "cover",);
+  const [activePanel, setActivePanel] = useState<PanelId | null>(startsOnRight ? "right" : null,);
   const [isAnimating, setIsAnimating] = useState(false);
   const [prevIsMobile, setPrevIsMobile] = useState(isMobile);
   const isFirstCameraSync = useRef(true);
@@ -291,10 +295,11 @@ export default function TriFoldBrochure({
             }}
           >
             <PanelFace fit={fit} className="rounded-sm">
-              <RightInside 
+            <RightInside
               posts={posts}
-              initialView={initialPanel === "blog" ? "blog" : "menu"}
-              />
+              books={books}
+              initialView={initialPanel ?? "menu"}
+            />
             </PanelFace>
             <PanelFace fit={fit} flip className="rounded-sm" outerEdge="right">
               <RightFoldedFace />

@@ -9,7 +9,7 @@ export function PanelNavLinks({
   onSelect: (id: string) => void;
 }) {
   return (
-    <ul className="flex flex-col items-center space-y-4">
+    <ul className="flex flex-col items-center space-y-12">
       {links.map((link) => (
         <li key={link.id}>
           <button
