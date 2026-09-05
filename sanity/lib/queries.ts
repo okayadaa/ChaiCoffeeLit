@@ -77,3 +77,19 @@ export const BOOKS_QUERY = defineQuery(`
       recommendedAt
     }
   `)
+
+  export const ARCHIVE_ITEMS_QUERY = defineQuery(`
+    *[
+      _type == "archiveItem" &&
+      defined(title) &&
+      defined(image) &&
+      defined(description) &&
+      defined(eventDate)
+    ] | order(eventDate desc) {
+      _id,
+      title,
+      image,
+      description,
+      eventDate
+    }
+  `);

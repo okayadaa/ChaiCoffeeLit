@@ -57,7 +57,7 @@ export function RightInside({
             <Link
               href="/blog"
               className="mt-6 inline-block text-sm underline underline-offset-4 text-blue-500 hover:text-blue-600">
-                View all posts →
+                View all posts
             </Link>
 
           </div>
@@ -87,7 +87,7 @@ export function RightInside({
               href="/books"
               className="mt-6 inline-block text-sm text-blue-500 underline underline-offset-4 hover:text-blue-600"
             >
-              View all books →
+              View all books
             </Link>
           </div>
         ),

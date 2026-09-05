@@ -23,7 +23,7 @@ export function AboutPanel({
 
       <div className="mb-8">
         <h3 className="text-4xl text-[#333333]">
-          <ScrambleText text="About" />
+          <ScrambleText text="About Us" />
         </h3>
       </div>
 

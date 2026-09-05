@@ -1,23 +1,28 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { leftPanelNavLinks, leftPanelPages } from "../content/left-panel";
+import { leftPanelNavLinks } from "../content/left-panel";
 import type { LeftPanelView, SlideDirection } from "../types";
 import { PanelMenu } from "../ui/PanelMenu";
 import { PanelSlideView } from "../ui/PanelSlideView";
-import { PanelTabContent } from "../ui/PanelTabContent";
 import type { Participant } from "@/lib/about/types";
 import { AboutPanel } from "@/components/about/AboutPanel";
+import { ArchivePanel } from "@/components/archive/ArchivePanel";
+import type { ArchiveItem } from "@/lib/archive/types";
 
 export function LeftInside({
   participants,
+  archiveItems,
+  initialView = "menu",
 }: {
   participants: Participant[];
+  archiveItems: ArchiveItem[];
+  initialView?: LeftPanelView;
 }) {
   const [{ view, direction }, setNav] = useState<{
     view: LeftPanelView;
     direction: SlideDirection;
-  }>({ view: "menu", direction: 0 });
+  }>({ view: initialView, direction: 0 });
 
   const navigate = useCallback((next: LeftPanelView) => {
     setNav({ view: next, direction: next === "menu" ? -1 : 1 });
@@ -41,9 +46,8 @@ export function LeftInside({
           />
         ),
         archive: (
-          <PanelTabContent
-            title={leftPanelPages.archive.title}
-            body={leftPanelPages.archive.body}
+          <ArchivePanel
+            archiveItems={archiveItems}
             onBack={() => navigate("menu")}
           />
         ),
