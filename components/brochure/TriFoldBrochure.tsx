@@ -28,27 +28,34 @@ import { Crease } from "./ui/Crease";
 import { PanelFace } from "./ui/PanelFace";
 import type { BlogListPost } from "@/lib/blog/types";
 import type { Participant } from "@/lib/about/types";
-import type {Book} from "@/lib/books/types";
+import type { Book } from "@/lib/books/types";
+import type { ArchiveItem } from "@/lib/archive/types";
 
 type TriFoldBrochureProps = {
   posts: BlogListPost[];
   participants: Participant[];
   books: Book[];
-  initialPanel?: "blog" | "books";
+  archiveItems: ArchiveItem[];
+  initialPanel?: "blog" | "books" | "archive";
 };
 
 export default function TriFoldBrochure({
   posts,
   participants,
   books,
+  archiveItems,
   initialPanel,
 }: TriFoldBrochureProps) {
   const startsOnRight = initialPanel === "blog" || initialPanel === "books";
+  const startsOnLeft = initialPanel === "archive";
+  const startsOpen = startsOnRight || startsOnLeft;
   const isMobile = useIsMobile();
   const { width, height } = useViewportSize();
-  const [isOpen, setIsOpen] = useState(startsOnRight);
-  const [mobileView, setMobileView] = useState<MobileView>(startsOnRight ? "focus" : "cover",);
-  const [activePanel, setActivePanel] = useState<PanelId | null>(startsOnRight ? "right" : null,);
+  const [isOpen, setIsOpen] = useState(startsOpen);
+  const [mobileView, setMobileView] = useState<MobileView>(startsOpen ? "focus" : "cover",);
+  const [activePanel, setActivePanel] = useState<PanelId | null>(
+    startsOnRight ? "right" : startsOnLeft ? "left" : null,
+  );
   const [isAnimating, setIsAnimating] = useState(false);
   const [prevIsMobile, setPrevIsMobile] = useState(isMobile);
   const isFirstCameraSync = useRef(true);
@@ -298,7 +305,11 @@ export default function TriFoldBrochure({
             <RightInside
               posts={posts}
               books={books}
-              initialView={initialPanel ?? "menu"}
+              initialView={
+                initialPanel === "blog" || initialPanel === "books"
+                  ? initialPanel
+                  : "menu"
+              }
             />
             </PanelFace>
             <PanelFace fit={fit} flip className="rounded-sm" outerEdge="right">
@@ -319,7 +330,11 @@ export default function TriFoldBrochure({
             }}
           >
             <PanelFace fit={fit} className="rounded-sm">
-            <LeftInside participants={participants} />
+            <LeftInside
+              participants={participants}
+              archiveItems={archiveItems}
+              initialView={initialPanel === "archive" ? "archive" : "menu"}
+            />
             </PanelFace>
             <PanelFace fit={fit} flip className="rounded-sm" outerEdge="left">
               <BackCover />
