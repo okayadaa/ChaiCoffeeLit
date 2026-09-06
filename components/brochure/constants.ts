@@ -10,13 +10,23 @@ export const MOBILE_FOCUS_BACK_CHROME =
   MOBILE_FOCUS_BACK_GAP + MOBILE_FOCUS_BACK_BUTTON_HEIGHT;
 
 export const WING_DURATION = 0.75;
+export const MOBILE_WING_DURATION = 0.4;
+export const MOBILE_CLOSE_WING_DURATION = 0.55;
 export const wingTransition = {
   duration: WING_DURATION,
   ease: [0.4, 0, 0.2, 1] as const,
 };
+
 export const cameraTransition = {
   duration: WING_DURATION,
   ease: [0.4, 0, 0.2, 1] as const,
+};
+
+export const MOBILE_CAMERA_DURATION = 0.35;
+
+export const mobileCameraTransition = {
+  duration: MOBILE_CAMERA_DURATION,
+  ease: [0.22, 1, 0.36, 1] as const,
 };
 export const sizeEase = "cubic-bezier(0.4, 0, 0.2, 1)";
 

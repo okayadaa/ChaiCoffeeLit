@@ -5,11 +5,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   MOBILE_FOCUS_BACK_CHROME,
   MOBILE_TAB_HEIGHT,
+  MOBILE_WING_DURATION,
   VIEWPORT_PADDING,
   WING_DURATION,
   cameraTransition,
+  mobileCameraTransition,
   sizeEase,
   wingTransition,
+  MOBILE_CLOSE_WING_DURATION,
 } from "./constants";
 import { getMobileCamera } from "./getMobileCamera";
 import { useBrochureSize } from "./hooks/useBrochureSize";
@@ -30,6 +33,7 @@ import type { BlogListPost } from "@/lib/blog/types";
 import type { Participant } from "@/lib/about/types";
 import type { Book } from "@/lib/books/types";
 import type { ArchiveItem } from "@/lib/archive/types";
+import { useHasMounted } from "./hooks/useHasMounted";
 
 type TriFoldBrochureProps = {
   posts: BlogListPost[];
@@ -60,6 +64,7 @@ export default function TriFoldBrochure({
   const [prevIsMobile, setPrevIsMobile] = useState(isMobile);
   const isFirstCameraSync = useRef(true);
   const brochureRef = useRef<HTMLDivElement>(null);
+  const mounted = useHasMounted();
 
   if (isMobile !== prevIsMobile) {
     setPrevIsMobile(isMobile);
@@ -72,7 +77,7 @@ export default function TriFoldBrochure({
   }
 
   const { fit, panelWidth, brochureHeight } = useBrochureSize(isMobile);
-  const layoutWidth = panelWidth * (isOpen ? 3 : 1);
+  const layoutWidth = panelWidth * (isMobile ? 3 : isOpen ? 3 : 1);
 
   const leftRotate = useMotionValue(180);
   const rightRotate = useMotionValue(-180);
@@ -90,6 +95,9 @@ export default function TriFoldBrochure({
   const focusAvailH = availH - MOBILE_FOCUS_BACK_CHROME;
   const mobileFocusScale = Math.min(availW / panelWidth, focusAvailH / brochureHeight);
   const mobileFocusVisibleWidth = panelWidth * mobileFocusScale;
+  const activeWingDuration = isMobile
+  ? MOBILE_WING_DURATION
+  : WING_DURATION;
 
   const syncCamera = useCallback(
     (view: MobileView, panel: PanelId | null, animateCamera = true) => {
@@ -103,65 +111,160 @@ export default function TriFoldBrochure({
       );
 
       if (animateCamera) {
-        animate(cameraScale, target.scale, cameraTransition);
-        animate(cameraX, target.x, cameraTransition);
-        animate(cameraY, target.y, cameraTransition);
+        const transition = isMobile
+          ? mobileCameraTransition
+          : cameraTransition;
+        
+        animate(cameraScale, target.scale, transition);
+        animate(cameraX, target.x, transition);
+        animate(cameraY, target.y, transition);
       } else {
         cameraScale.set(target.scale);
         cameraX.set(target.x);
         cameraY.set(target.y);
       }
     },
-    [panelWidth, brochureHeight, availW, availH, cameraScale, cameraX, cameraY],
+    [panelWidth, brochureHeight, availW, availH, cameraScale, cameraX, cameraY, isMobile],
+  );
+
+  const animateCameraTo = useCallback(
+    async (view: MobileView, panel: PanelId | null) => {
+      const target = getMobileCamera(
+        view,
+        panel,
+        panelWidth,
+        brochureHeight,
+        availW,
+        availH,
+      );
+  
+      await Promise.all([
+        animate(cameraScale, target.scale, mobileCameraTransition),
+        animate(cameraX, target.x, mobileCameraTransition),
+        animate(cameraY, target.y, mobileCameraTransition),
+      ]);
+    },
+    [
+      panelWidth,
+      brochureHeight,
+      availW,
+      availH,
+      cameraScale,
+      cameraX,
+      cameraY,
+    ],
   );
 
   useEffect(() => {
     const controls: ReturnType<typeof animate>[] = [];
 
+    const wingDuration = isOpen
+    ? activeWingDuration
+    : isMobile
+      ? MOBILE_CLOSE_WING_DURATION
+      : WING_DURATION;
+
+    const activeWingTransition = {
+      ...wingTransition,
+      duration: wingDuration,
+    };
+  
     if (isOpen) {
       controls.push(
-        animate(leftRotate, 0, wingTransition),
-        animate(rightRotate, 0, { ...wingTransition, delay: WING_DURATION }),
+        animate(leftRotate, 0, activeWingTransition),
+        animate(rightRotate, 0, {
+          ...activeWingTransition,
+          delay: wingDuration,
+        }),
       );
     } else {
       controls.push(
-        animate(rightRotate, -180, wingTransition),
-        animate(leftRotate, 180, { ...wingTransition, delay: WING_DURATION }),
+        animate(rightRotate, -180, activeWingTransition),
+        animate(leftRotate, 180, {
+          ...activeWingTransition,
+          delay: wingDuration,
+        }),
       );
     }
 
     return () => controls.forEach((control) => control.stop());
-  }, [isOpen, leftRotate, rightRotate]);
+  }, [isOpen, isMobile, leftRotate, rightRotate, activeWingDuration]);
 
   useEffect(() => {
     if (!isMobile) {
       isFirstCameraSync.current = true;
       return;
     }
-    syncCamera(mobileView, activePanel, !isFirstCameraSync.current);
+    const shouldAnimateCamera =
+    mobileView === "focus" && !isFirstCameraSync.current;
+
+    syncCamera(
+      mobileView,
+      activePanel,
+      shouldAnimateCamera
+    );
     isFirstCameraSync.current = false;
   }, [isMobile, mobileView, activePanel, syncCamera]);
 
   const startAnimationGuard = useCallback(() => {
     setIsAnimating(true);
-    window.setTimeout(() => setIsAnimating(false), WING_DURATION * 1000 * 2);
-  }, []);
+    window.setTimeout(() => setIsAnimating(false), activeWingDuration * 1000 * 2);
+  }, [activeWingDuration]);
 
-  const openBrochure = useCallback(() => {
+  const openBrochure = useCallback(async () => {
     if (isAnimating) return;
-    startAnimationGuard();
-    setIsOpen(true);
-    setMobileView(isMobile ? "overview" : "cover");
+  
+    if (!isMobile) {
+      startAnimationGuard();
+      setIsOpen(true);
+      setActivePanel(null);
+      return;
+    }
+  
+    setIsAnimating(true);
     setActivePanel(null);
-  }, [isAnimating, startAnimationGuard, isMobile]);
+  
+    // 1. Pull the camera back to the full-brochure overview.
+    await animateCameraTo("overview", null);
+  
+    // 2. Once the camera finishes, unfold the brochure.
+    setIsOpen(true);
+    setMobileView("overview");
+  
+    // 3. Keep taps locked until both wings finish unfolding.
+    window.setTimeout(() => {
+      setIsAnimating(false);
+    }, activeWingDuration * 1000 * 2);
+  }, [
+    isAnimating,
+    isMobile,
+    startAnimationGuard,
+    animateCameraTo,
+    activeWingDuration,
+  ]);
 
   const closeBrochure = useCallback(() => {
     if (isAnimating) return;
+
+    if (isMobile) {
+      setIsAnimating(true);
+  
+      setIsOpen(false);
+      setMobileView("cover");
+      setActivePanel(null);
+  
+      window.setTimeout(() => {
+        setIsAnimating(false);
+      }, MOBILE_CLOSE_WING_DURATION * 1000 * 2);
+  
+      return;
+    }
+
     startAnimationGuard();
     setIsOpen(false);
     setMobileView("cover");
     setActivePanel(null);
-  }, [isAnimating, startAnimationGuard]);
+  }, [isAnimating, isMobile, startAnimationGuard]);
 
   useEffect(() => {
     if (isMobile || !isOpen) return;
@@ -242,7 +345,9 @@ export default function TriFoldBrochure({
       style={{
         width: layoutWidth,
         height: brochureHeight,
-        transition: `width ${WING_DURATION}s ${sizeEase}`,
+        transition: isMobile
+          ? "none"
+          : `width ${WING_DURATION}s ${sizeEase}`,
         WebkitTapHighlightColor: "transparent",
         cursor: isMobile || !isOpen ? "pointer" : undefined,
       }}
@@ -346,6 +451,10 @@ export default function TriFoldBrochure({
       </div>
     </div>
   );
+
+  if (!mounted) {
+    return null;
+  }
 
   if (isMobile) {
     return (
