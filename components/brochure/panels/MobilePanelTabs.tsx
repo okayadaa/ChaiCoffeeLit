@@ -1,5 +1,6 @@
 import { MOBILE_TAB_HEIGHT, PANELS } from "../constants";
 import type { PanelId } from "../types";
+import { GlassPill } from "../ui/GlassPill";
 
 export function MobilePanelTabs({
   activePanel,
@@ -16,23 +17,18 @@ export function MobilePanelTabs({
       aria-label="Brochure panels"
     >
       {PANELS.map(({ id, label }) => (
-        <button
+        <GlassPill
           key={id}
-          type="button"
           role="tab"
           aria-selected={activePanel === id}
+          selected={activePanel === id}
           onClick={(e) => {
             e.stopPropagation();
             onSelect(id);
           }}
-          className={`touch-manipulation rounded-full px-5 py-2 text-xs font-medium uppercase tracking-[0.2em] transition-colors ${
-            activePanel === id
-              ? "bg-amber-900/20 text-[#333333]"
-              : "bg-amber-900/10 text-[#333333] hover:bg-amber-900/20"
-          }`}
         >
           {label}
-        </button>
+        </GlassPill>
       ))}
     </div>
   );

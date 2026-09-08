@@ -1,3 +1,4 @@
+import { BlurredCafeBackground } from "@/components/brochure/BlurredCafeBackground";
 import TriFoldBrochure from "@/components/brochure/TriFoldBrochure";
 import type { BlogListPost } from "@/lib/blog/types";
 import { sanityFetch } from "@/sanity/lib/live";
@@ -28,18 +29,21 @@ export default async function Home({ searchParams }: HomeProps) {
   const archiveItems = archiveItemsData as ArchiveItem[];
 
   return (
-    <main className="flex min-h-screen items-center justify-center overflow-hidden bg-[#d8c3a5] px-3">
-      <TriFoldBrochure
-        posts={posts}
-        books={books}
-        participants={participants}
-        archiveItems={archiveItems}
-        initialPanel={
-          panel === "blog" || panel === "books" || panel === "archive"
-            ? panel
-            : undefined
-        }
-      />
+    <main className="fixed inset-0 flex items-center justify-center overflow-hidden px-3">
+      <BlurredCafeBackground />
+      <div className="relative z-10 w-full">
+        <TriFoldBrochure
+          posts={posts}
+          books={books}
+          participants={participants}
+          archiveItems={archiveItems}
+          initialPanel={
+            panel === "blog" || panel === "books" || panel === "archive"
+              ? panel
+              : undefined
+          }
+        />
+      </div>
     </main>
   );
 }

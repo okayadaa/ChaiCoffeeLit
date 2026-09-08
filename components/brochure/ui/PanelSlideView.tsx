@@ -32,7 +32,7 @@ export function PanelSlideView<K extends string>({
           animate="center"
           exit="exit"
           transition={panelSlideTransition}
-          className="absolute inset-0"
+          className="absolute inset-0 flex h-full flex-col overflow-hidden"
         >
           {views[view]}
         </motion.div>

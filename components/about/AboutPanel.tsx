@@ -6,6 +6,7 @@ import type { Participant } from "@/lib/about/types";
 
 import { ParticipantBio } from "./ParticipantBio";
 import { PanelBackButton } from "@/components/brochure/ui/PanelBackButton";
+import { PanelScrollBody } from "@/components/brochure/ui/PanelScrollBody";
 import { ScrambleText } from "@/components/brochure/ui/ScrambleText";
 
 type AboutPanelProps = {
@@ -27,47 +28,48 @@ export function AboutPanel({
         </h3>
       </div>
 
-    <div className="min-h-0 flex-1 overflow-y-auto pr-2">
-      {participants.length === 0 ? (
-        <p className="text-sm leading-relaxed text-[#333333] text-center">
-          Team profiles will appear here soon.
-        </p>
-      ) : (
-        <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2">
-          {participants.map((participant) => (
-            <ParticipantBio
-              key={participant._id}
-              participant={participant}
-        />
-      ))}
-    </div> )}
+      <PanelScrollBody className="pr-2">
+        {participants.length === 0 ? (
+          <p className="text-center text-sm leading-relaxed text-[#333333]">
+            Team profiles will appear here soon.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2">
+            {participants.map((participant) => (
+              <ParticipantBio
+                key={participant._id}
+                participant={participant}
+              />
+            ))}
+          </div>
+        )}
 
-      <div className="mt-16 border-t border-[#8a7f70]/20 pt-8 text-center">
-        <p className="text-xs uppercase tracking-[0.22em] text-[#8a7f70]">
+        <div className="mt-16 border-t border-[#8a7f70]/20 pt-8 text-center">
+          <p className="text-xs uppercase tracking-[0.22em] text-[#8a7f70]">
             Let&apos;s Connect
-        </p>
+          </p>
 
-        <div className="mt-4 flex justify-center gap-6 text-sm text-[#333333]">
-          <a
-            href="https://www.instagram.com/sexgenlab?igsi=MWg2azRhM3c3aHRoag=="
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 hover:opacity-70"
-          >
-            <FontAwesomeIcon icon={faInstagram} aria-hidden="true" />
-            Instagram
-          </a>
+          <div className="mt-4 flex justify-center gap-6 text-sm text-[#333333]">
+            <a
+              href="https://www.instagram.com/sexgenlab?igsi=MWg2azRhM3c3aHRoag=="
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 hover:opacity-70"
+            >
+              <FontAwesomeIcon icon={faInstagram} aria-hidden="true" />
+              Instagram
+            </a>
 
-          <a
-            href="mailto:chaicoffeelit@gmail.com"
-            className="inline-flex items-center gap-2 hover:opacity-70"
-          >
-            <FontAwesomeIcon icon={faEnvelope} aria-hidden="true" />
-            Email
-          </a>
+            <a
+              href="mailto:chaicoffeelit@gmail.com"
+              className="inline-flex items-center gap-2 hover:opacity-70"
+            >
+              <FontAwesomeIcon icon={faEnvelope} aria-hidden="true" />
+              Email
+            </a>
+          </div>
         </div>
-      </div>
+      </PanelScrollBody>
     </div>
- </div>
   );
 }

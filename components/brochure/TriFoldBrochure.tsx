@@ -114,7 +114,7 @@ export default function TriFoldBrochure({
         const transition = isMobile
           ? mobileCameraTransition
           : cameraTransition;
-        
+
         animate(cameraScale, target.scale, transition);
         animate(cameraX, target.x, transition);
         animate(cameraY, target.y, transition);
@@ -137,7 +137,7 @@ export default function TriFoldBrochure({
         availW,
         availH,
       );
-  
+
       await Promise.all([
         animate(cameraScale, target.scale, mobileCameraTransition),
         animate(cameraX, target.x, mobileCameraTransition),
@@ -168,7 +168,7 @@ export default function TriFoldBrochure({
       ...wingTransition,
       duration: wingDuration,
     };
-  
+
     if (isOpen) {
       controls.push(
         animate(leftRotate, 0, activeWingTransition),
@@ -213,24 +213,24 @@ export default function TriFoldBrochure({
 
   const openBrochure = useCallback(async () => {
     if (isAnimating) return;
-  
+
     if (!isMobile) {
       startAnimationGuard();
       setIsOpen(true);
       setActivePanel(null);
       return;
     }
-  
+
     setIsAnimating(true);
     setActivePanel(null);
-  
+
     // 1. Pull the camera back to the full-brochure overview.
     await animateCameraTo("overview", null);
-  
+
     // 2. Once the camera finishes, unfold the brochure.
     setIsOpen(true);
     setMobileView("overview");
-  
+
     // 3. Keep taps locked until both wings finish unfolding.
     window.setTimeout(() => {
       setIsAnimating(false);
@@ -248,15 +248,15 @@ export default function TriFoldBrochure({
 
     if (isMobile) {
       setIsAnimating(true);
-  
+
       setIsOpen(false);
       setMobileView("cover");
       setActivePanel(null);
-  
+
       window.setTimeout(() => {
         setIsAnimating(false);
       }, MOBILE_CLOSE_WING_DURATION * 1000 * 2);
-  
+
       return;
     }
 
@@ -360,24 +360,30 @@ export default function TriFoldBrochure({
           className="relative [transform-style:preserve-3d]"
           style={{ transform: "rotateX(3.2deg) rotateY(-1.2deg)" }}
         >
-          {/* Contact shadow — grounds brochure on the surface */}
+
+        {/* Contact shadow — desktop only */}
+        {!isMobile && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 z-0 -translate-x-1/2"
+          style={{
+            bottom: -14,
+            width: "92%",
+            height: 36,
+            background:
+              "radial-gradient(ellipse at center, rgba(35,22,10,0.48) 0%, rgba(35,22,10,0.14) 50%, transparent 72%)",
+            filter: "blur(8px)",
+          }}
+        />
+      )}
           <div
-            aria-hidden
-            className="pointer-events-none absolute left-1/2 z-0 -translate-x-1/2"
-            style={{
-              bottom: -14,
-              width: "92%",
-              height: 36,
-              background:
-                "radial-gradient(ellipse at center, rgba(35,22,10,0.48) 0%, rgba(35,22,10,0.14) 50%, transparent 72%)",
-              filter: "blur(8px)",
-            }}
-          />
-          <div
-            className="relative overflow-visible rounded-sm shadow-[0_22px_55px_rgba(0,0,0,0.32),0_8px_20px_rgba(0,0,0,0.18)] [transform-style:preserve-3d]"
+            className="relative overflow-visible rounded-sm [transform-style:preserve-3d]"
             style={{
               width: panelWidth,
               height: brochureHeight,
+              boxShadow: isMobile
+                ? "0 8px 18px rgba(0,0,0,0.14)"
+                : "0 22px 55px rgba(0,0,0,0.32), 0 8px 20px rgba(0,0,0,0.18)",
             }}
           >
           <div
@@ -460,26 +466,27 @@ export default function TriFoldBrochure({
     return (
       <div className="relative flex w-full max-w-full flex-col items-center justify-center overflow-hidden">
         <div
-          className={`relative flex w-full flex-1 overflow-hidden ${
+          className={`relative flex w-full overflow-hidden ${
             mobileView === "focus"
-              ? "flex-col items-center"
-              : "items-center justify-center"
+              ? "min-h-0 flex-1 flex-col items-center"
+              : "flex-col items-center justify-center"
           }`}
           style={{ minHeight: availH }}
         >
           {mobileView === "focus" && (
             <div
-              className="mb-[10px] flex shrink-0 justify-start"
+              className="mb-[28px] flex shrink-0 justify-start"
               style={{ width: mobileFocusVisibleWidth }}
             >
               <MobileBackButton onBack={backToOverview} />
             </div>
           )}
+
           <div
             className={
               mobileView === "focus"
                 ? "flex min-h-0 w-full flex-1 items-center justify-center"
-                : "contents"
+                : "flex w-full items-center justify-center"
             }
           >
             <motion.div
@@ -493,11 +500,20 @@ export default function TriFoldBrochure({
               {brochureScene}
             </motion.div>
           </div>
+
+          {showMobileTabs && mobileView === "overview" && (
+            <div className="mt-3 shrink-0">
+              <MobilePanelTabs
+                activePanel={null}
+                onSelect={selectPanel}
+              />
+            </div>
+          )}
         </div>
 
-        {showMobileTabs && (
+        {showMobileTabs && mobileView === "focus" && (
           <MobilePanelTabs
-            activePanel={mobileView === "focus" ? activePanel : null}
+            activePanel={activePanel}
             onSelect={selectPanel}
           />
         )}

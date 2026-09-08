@@ -32,6 +32,22 @@ body {
   font-family: var(--font-share-tech-mono), monospace;
 }
 
+.cafe-photo {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(9px);
+  transform: scale(1.15);
+}
+
+.cafe-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: #d8c3a5;
+  opacity: 0.1;
+}
+
 @keyframes journal-fade-up {
   from {
     opacity: 0;

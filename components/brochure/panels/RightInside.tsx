@@ -6,6 +6,7 @@ import type { RightPanelView, SlideDirection } from "../types";
 import { BlogPostList } from "../ui/BlogPostList";
 import { PanelBackButton } from "../ui/PanelBackButton";
 import { PanelMenu } from "../ui/PanelMenu";
+import { PanelScrollBody } from "../ui/PanelScrollBody";
 import { PanelSlideView } from "../ui/PanelSlideView";
 import { ScrambleText } from "../ui/ScrambleText";
 import type { BlogListPost } from "@/lib/blog/types"; 
@@ -45,21 +46,20 @@ export function RightInside({
           />
         ),
         blog: (
-          <div className="relative z-10 p-12">
+          <div className="relative z-10 flex h-full flex-col p-12">
             <PanelBackButton onBack={() => navigate("menu")} />
             <h3 className="mb-8 text-4xl text-[#333333]">
               <ScrambleText text="Blog" />
             </h3>
-            <div className="max-h-[420px] overflow-y-auto pr-2">
+            <PanelScrollBody className="pr-2">
               <BlogPostList posts={posts.slice(0, 6)} />
-            </div>
-            
+            </PanelScrollBody>
             <Link
               href="/blog"
-              className="mt-6 inline-block text-sm underline underline-offset-4 text-blue-500 hover:text-blue-600">
-                View all posts
+              className="mt-6 inline-block text-sm text-blue-500 underline underline-offset-4 hover:text-blue-600"
+            >
+              View all posts
             </Link>
-
           </div>
         ),
         books: (
@@ -70,7 +70,7 @@ export function RightInside({
               <ScrambleText text="Books" />
             </h3>
 
-            <div className="min-h-0 flex-1 overflow-y-auto pr-2">
+            <PanelScrollBody className="pr-2">
               {books.length === 0 ? (
                 <p className="text-sm text-[#333333]">
                   No book recommendations yet.
@@ -81,7 +81,7 @@ export function RightInside({
                   variant="compact"
                 />
               )}
-            </div>
+            </PanelScrollBody>
 
             <Link
               href="/books"
