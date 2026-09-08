@@ -8,11 +8,15 @@ import { urlFor } from "@/sanity/lib/image";
 
 type ParticipantBioProps = {
   participant: Participant;
+  variant?: "preview" | "page";
 };
 
 const PREVIEW_WORD_COUNT = 49;
 
-export function ParticipantBio({ participant }: ParticipantBioProps) {
+export function ParticipantBio({
+  participant,
+  variant = "preview",
+}: ParticipantBioProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const imageUrl = urlFor(participant.image)
@@ -47,7 +51,11 @@ export function ParticipantBio({ participant }: ParticipantBioProps) {
         {participant.role}
       </p>
 
-      <p className="mt-3 max-w-[170px] text-xs leading-relaxed text-[#333333]">
+      <p
+        className={`mt-3 text-xs leading-relaxed text-[#333333] ${
+          variant === "page" ? "max-w-[240px]" : "max-w-[170px]"
+        }`}
+      >
         {displayedBio}
       </p>
 

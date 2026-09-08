@@ -12,7 +12,6 @@ export default async function BlogPage() {
 
   return (
     <div className="mx-auto w-full max-w-2xl">
-      <h1 className="mb-10 text-3xl">Blog</h1>
 
       <BlogPostList posts={posts} />
     </div>

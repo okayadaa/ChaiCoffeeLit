@@ -11,7 +11,7 @@ export function ArchiveGallery({
   archiveItems,
 }: ArchiveGalleryProps) {
   return (
-    <section className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+    <section className="grid grid-cols-1 justify-items-center gap-10 sm:grid-cols-2 lg:grid-cols-3">
       {archiveItems.map((item) => {
         const imageUrl = urlFor(item.image)
           .width(1400)
@@ -22,13 +22,14 @@ export function ArchiveGallery({
         return (
           <article
             key={item._id}
-            className="min-w-0 bg-[#f7f2e8] p-4 shadow-md"
+            className="w-full max-w-[380px] min-w-0 bg-[#f7f2e8] p-4 shadow-md"
           >
             <div className="relative aspect-[4/3] overflow-hidden bg-neutral-200">
               <Image
                 src={imageUrl}
                 alt={item.title}
                 fill
+                sizes="(max-width: 639px) calc(100vw - 5rem), (max-width: 1023px) calc((100vw - 11.5rem) / 2), 348px"
                 className="object-cover"
               />
             </div>

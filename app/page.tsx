@@ -38,7 +38,7 @@ export default async function Home({ searchParams }: HomeProps) {
           participants={participants}
           archiveItems={archiveItems}
           initialPanel={
-            panel === "blog" || panel === "books" || panel === "archive"
+            panel === "blog" || panel === "books" || panel === "archive" || panel === "about"
               ? panel
               : undefined
           }

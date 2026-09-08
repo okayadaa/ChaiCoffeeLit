@@ -1,10 +1,11 @@
 import { faInstagram } from "@fortawesome/free-brands-svg-icons";
-import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 
 import type { Participant } from "@/lib/about/types";
 
-import { ParticipantBio } from "./ParticipantBio";
+import { ConnectEmailLink } from "./ConnectEmailLink";
+import { TeamGrid } from "./TeamGrid";
 import { PanelBackButton } from "@/components/brochure/ui/PanelBackButton";
 import { PanelScrollBody } from "@/components/brochure/ui/PanelScrollBody";
 import { ScrambleText } from "@/components/brochure/ui/ScrambleText";
@@ -18,6 +19,8 @@ export function AboutPanel({
   participants,
   onBack,
 }: AboutPanelProps) {
+  const previewParticipants = participants.slice(0, 4);
+
   return (
     <div className="relative z-10 flex h-full flex-col px-8 py-10">
       <PanelBackButton onBack={onBack} />
@@ -29,20 +32,20 @@ export function AboutPanel({
       </div>
 
       <PanelScrollBody className="pr-2">
-        {participants.length === 0 ? (
+        {previewParticipants.length === 0 ? (
           <p className="text-center text-sm leading-relaxed text-[#333333]">
             Team profiles will appear here soon.
           </p>
         ) : (
-          <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2">
-            {participants.map((participant) => (
-              <ParticipantBio
-                key={participant._id}
-                participant={participant}
-              />
-            ))}
-          </div>
+          <TeamGrid participants={previewParticipants} variant="preview" />
         )}
+
+        <Link
+          href="/team"
+          className="mt-6 inline-block text-sm text-blue-500 underline underline-offset-4 hover:text-blue-600"
+        >
+          View the Team
+        </Link>
 
         <div className="mt-16 border-t border-[#8a7f70]/20 pt-8 text-center">
           <p className="text-xs uppercase tracking-[0.22em] text-[#8a7f70]">
@@ -60,13 +63,7 @@ export function AboutPanel({
               Instagram
             </a>
 
-            <a
-              href="mailto:chaicoffeelit@gmail.com"
-              className="inline-flex items-center gap-2 hover:opacity-70"
-            >
-              <FontAwesomeIcon icon={faEnvelope} aria-hidden="true" />
-              Email
-            </a>
+            <ConnectEmailLink />
           </div>
         </div>
       </PanelScrollBody>

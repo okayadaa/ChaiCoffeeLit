@@ -21,17 +21,11 @@ export function BlogPostList({
         <li key={post.slug} className="border-b border-amber-900/10 py-5 first:pt-0 last:border-b-0">
           <Link
             href={`/blog/${post.slug}`}
-            className="group touch-manipulation block animate-[journal-fade-up_0.45s_ease-out_both]"
+            className="touch-manipulation block animate-[journal-fade-up_0.45s_ease-out_both]"
             style={{ animationDelay: `${index * 60}ms` }}
           >
             <span className="text-xl leading-snug text-[#333333]">
               {post.title}
-              <span
-                aria-hidden
-                className="ml-1.5 inline-block text-base text-[#333333] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              >
-                →
-              </span>
             </span>
             <span className="mt-2 block text-xs uppercase tracking-[0.2em] text-[#333333]">
               {post.category} · {formatPostDate(post.publishedAt)}

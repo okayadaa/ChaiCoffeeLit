@@ -40,7 +40,7 @@ type TriFoldBrochureProps = {
   participants: Participant[];
   books: Book[];
   archiveItems: ArchiveItem[];
-  initialPanel?: "blog" | "books" | "archive";
+  initialPanel?: "blog" | "books" | "archive" | "about";
 };
 
 export default function TriFoldBrochure({
@@ -51,7 +51,7 @@ export default function TriFoldBrochure({
   initialPanel,
 }: TriFoldBrochureProps) {
   const startsOnRight = initialPanel === "blog" || initialPanel === "books";
-  const startsOnLeft = initialPanel === "archive";
+  const startsOnLeft = initialPanel === "archive" || initialPanel === "about";
   const startsOpen = startsOnRight || startsOnLeft;
   const isMobile = useIsMobile();
   const { width, height } = useViewportSize();
@@ -444,7 +444,11 @@ export default function TriFoldBrochure({
             <LeftInside
               participants={participants}
               archiveItems={archiveItems}
-              initialView={initialPanel === "archive" ? "archive" : "menu"}
+              initialView={
+                initialPanel === "archive" || initialPanel === "about"
+                  ? initialPanel
+                  : "menu"
+              }
             />
             </PanelFace>
             <PanelFace fit={fit} flip className="rounded-sm" outerEdge="left">
