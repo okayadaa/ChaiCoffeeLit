@@ -21,6 +21,7 @@ export function ArchivePostcard({
           src={imageSrc}
           alt={imageAlt}
           fill
+          sizes="(max-width: 640px) 94vw, 380px"
           className="object-cover"
         />
       </div>
