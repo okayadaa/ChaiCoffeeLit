@@ -30,14 +30,12 @@ import type { MobileView, PanelId } from "./types";
 import { Crease } from "./ui/Crease";
 import { PanelFace } from "./ui/PanelFace";
 import type { BlogListPost } from "@/lib/blog/types";
-import type { Participant } from "@/lib/about/types";
 import type { Book } from "@/lib/books/types";
 import type { ArchiveItem } from "@/lib/archive/types";
 import { useHasMounted } from "./hooks/useHasMounted";
 
 type TriFoldBrochureProps = {
   posts: BlogListPost[];
-  participants: Participant[];
   books: Book[];
   archiveItems: ArchiveItem[];
   initialPanel?: "blog" | "books" | "archive" | "about";
@@ -45,7 +43,6 @@ type TriFoldBrochureProps = {
 
 export default function TriFoldBrochure({
   posts,
-  participants,
   books,
   archiveItems,
   initialPanel,
@@ -442,7 +439,6 @@ export default function TriFoldBrochure({
           >
             <PanelFace fit={fit} className="rounded-sm">
             <LeftInside
-              participants={participants}
               archiveItems={archiveItems}
               initialView={
                 initialPanel === "archive" || initialPanel === "about"

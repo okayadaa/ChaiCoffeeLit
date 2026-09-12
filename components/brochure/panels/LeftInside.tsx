@@ -5,17 +5,14 @@ import { leftPanelNavLinks } from "../content/left-panel";
 import type { LeftPanelView, SlideDirection } from "../types";
 import { PanelMenu } from "../ui/PanelMenu";
 import { PanelSlideView } from "../ui/PanelSlideView";
-import type { Participant } from "@/lib/about/types";
 import { AboutPanel } from "@/components/about/AboutPanel";
 import { ArchivePanel } from "@/components/archive/ArchivePanel";
 import type { ArchiveItem } from "@/lib/archive/types";
 
 export function LeftInside({
-  participants,
   archiveItems,
   initialView = "menu",
 }: {
-  participants: Participant[];
   archiveItems: ArchiveItem[];
   initialView?: LeftPanelView;
 }) {
@@ -41,7 +38,6 @@ export function LeftInside({
         ),
         about: (
           <AboutPanel
-            participants={participants}
             onBack={() => navigate("menu")}
           />
         ),
