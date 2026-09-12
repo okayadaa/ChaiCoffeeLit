@@ -19,7 +19,11 @@ export function BookCard({
           alt={`Cover of ${book.title}`}
             fill
             className="object-cover"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            sizes={
+              variant === "compact"
+                ? "(max-width: 640px) 25vw, 180px"
+                : "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            }
           />
       </div>
 

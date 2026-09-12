@@ -65,6 +65,7 @@ export default function TriFoldBrochure({
 
   if (isMobile !== prevIsMobile) {
     setPrevIsMobile(isMobile);
+  
     if (!isMobile) {
       setMobileView("cover");
       setActivePanel(null);

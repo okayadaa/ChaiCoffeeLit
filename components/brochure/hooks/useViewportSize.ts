@@ -1,36 +1,47 @@
 import { useSyncExternalStore } from "react";
 
-function subscribeToViewport(onChange: () => void) {
-  window.addEventListener("resize", onChange);
+function getViewportSize() {
+  const width = window.visualViewport?.width ?? window.innerWidth;
+  const height = window.visualViewport?.height ?? window.innerHeight;
 
-  window.visualViewport?.addEventListener("resize", onChange);
+  return `${width}:${height}`;
+}
+
+function subscribeToViewport(onChange: () => void) {
+  let frameId: number | null = null;
+
+  const handleResize = () => {
+    if (frameId !== null) {
+      return;
+    }
+
+    frameId = window.requestAnimationFrame(() => {
+      frameId = null;
+      onChange();
+    });
+  };
+
+  window.addEventListener("resize", handleResize);
+  window.visualViewport?.addEventListener("resize", handleResize);
 
   return () => {
-    window.removeEventListener("resize", onChange);
-    window.visualViewport?.removeEventListener("resize", onChange);
+    window.removeEventListener("resize", handleResize);
+    window.visualViewport?.removeEventListener("resize", handleResize);
+
+    if (frameId !== null) {
+      window.cancelAnimationFrame(frameId);
+    }
   };
 }
 
-function getViewportWidth() {
-  return window.visualViewport?.width ?? window.innerWidth;
-}
-
-function getViewportHeight() {
-  return window.visualViewport?.height ?? window.innerHeight;
-}
-
 export function useViewportSize() {
-  const width = useSyncExternalStore(
+  const snapshot = useSyncExternalStore(
     subscribeToViewport,
-    getViewportWidth,
-    () => 1280,
+    getViewportSize,
+    () => "1280:800",
   );
 
-  const height = useSyncExternalStore(
-    subscribeToViewport,
-    getViewportHeight,
-    () => 800,
-  );
+  const [width, height] = snapshot.split(":").map(Number);
 
   return { width, height };
 }
