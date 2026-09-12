@@ -109,7 +109,7 @@ export default function Badge({
       >
         <span
           style={{
-            fontFamily: "'Arial Black', Arial, sans-serif",
+            fontFamily: "'Bebas Neue', sans-serif",
             fontWeight: 900,
             fontSize: 30,
             lineHeight: 1,

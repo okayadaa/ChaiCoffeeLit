@@ -48,9 +48,14 @@ export function RightInside({
         blog: (
           <div className="relative z-10 flex h-full flex-col p-12">
             <PanelBackButton onBack={() => navigate("menu")} />
-            <h3 className="mb-8 text-4xl text-[#333333]">
-              <ScrambleText text="Blog" />
-            </h3>
+            <div className="mb-8">
+              <h3 className="text-4xl text-[#333333]">
+                <ScrambleText text="Blog" />
+              </h3>
+              <p className="mt-3 text-center text-md text-[#333333]">
+                "To be taken in between sips"
+              </p>
+            </div>
             <PanelScrollBody className="pr-2">
               <BlogPostList posts={posts.slice(0, 6)} />
             </PanelScrollBody>

@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@fontsource/norwester";
+@import "@fontsource/bebas-neue";
 
 :root {
   --background: #ffffff;
