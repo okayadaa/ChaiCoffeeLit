@@ -28,7 +28,7 @@ export function BlogPostList({
               {post.title}
             </span>
             <span className="mt-2 block text-xs uppercase tracking-[0.2em] text-[#333333]">
-              {post.category} · {formatPostDate(post.publishedAt)}
+             {post.author && `By ${post.author}`} · {formatPostDate(post.publishedAt)}
             </span>
           </Link>
         </li>

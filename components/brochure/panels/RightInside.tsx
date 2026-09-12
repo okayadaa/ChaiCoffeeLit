@@ -53,7 +53,7 @@ export function RightInside({
                 <ScrambleText text="Blog" />
               </h3>
               <p className="mt-3 text-center text-md text-[#333333]">
-                "To be taken in between sips"
+                - To be taken in between sips -
               </p>
             </div>
             <PanelScrollBody className="pr-2">

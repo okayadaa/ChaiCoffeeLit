@@ -37,11 +37,12 @@ export async function generateMetadata({
   const post = data as {
     title: string;
     slug: string;
-    category: string;
-    publishedAt: string;
-    excerpt?: string;
-    body: Parameters<typeof PortableTextRenderer>[0]["value"];
-  } | null;
+      category: string;
+      publishedAt: string;
+      excerpt?: string; 
+      author?: string;   
+      body: Parameters<typeof PortableTextRenderer>[0]["value"];
+    } | null;
 
   if (!post) {
     return {
@@ -71,6 +72,7 @@ export default async function BlogArticlePage({
     category: string;
     publishedAt: string;
     excerpt?: string;
+    author?: string;
     body: Parameters<typeof PortableTextRenderer>[0]["value"];
   } | null;
 
@@ -86,6 +88,12 @@ export default async function BlogArticlePage({
       <h1 className="mt-5 max-w-xl font-journal text-4xl leading-[1.05] tracking-tight text-[#1c1b19] sm:text-5xl">
         {post.title}
       </h1>
+
+      {post.author && (
+        <p className="mt-4 font-brochure text-xs uppercase tracking-[0.22em] text-[#8a7f70]">
+          By {post.author}
+        </p>
+      )}
 
       {post.excerpt && (
         <p className="mt-6 font-brochure text-xs uppercase tracking-[0.22em] text-[#8a7f70]">

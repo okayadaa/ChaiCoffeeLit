@@ -4,10 +4,10 @@ export type BlogListPost = {
   category: string;
   publishedAt: string;
   excerpt?: string;
+  author?: string;
 };
 
 export type Post = BlogListPost & {
-  excerpt?: string;
   body: string[];
   published: boolean;
 };

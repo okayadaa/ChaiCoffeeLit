@@ -12,7 +12,8 @@ export const POSTS_QUERY = defineQuery(`
     "slug": slug.current,
     category,
     publishedAt,
-    excerpt
+    excerpt,
+    author
   }
 `);
 
@@ -29,6 +30,7 @@ export const POST_BY_SLUG_QUERY = defineQuery(`
     category,
     publishedAt,
     excerpt,
+    author,
     body
   }
   `);
@@ -46,7 +48,8 @@ export const POSTS_BY_CATEGORY_QUERY = defineQuery(`
       "slug": slug.current,
       category,
       publishedAt,
-      excerpt
+      excerpt,
+      author
     }
   `);
 

@@ -14,6 +14,12 @@ export const postType = defineType({
     }),
 
     defineField({
+      name: "author",
+      title: "Author",
+      type: "string",
+    }),
+
+    defineField({
       name: "slug",
       title: "Slug",
       description: "Used in the blog post URL. Click on generate to create a slug.",
@@ -62,6 +68,7 @@ export const postType = defineType({
       of: [{type: "block"}],
       validation: (rule) => rule.required(),
     }),
+    
   ],
   preview: {
     select: {
@@ -69,7 +76,7 @@ export const postType = defineType({
       category: "category",
       publishedAt: "publishedAt",
     },
-  
+
     prepare({ title, category, publishedAt }) {
       const date = publishedAt
         ? new Date(publishedAt).toLocaleDateString()
