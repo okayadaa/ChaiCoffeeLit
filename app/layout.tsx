@@ -35,7 +35,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">{children} 
-        <SanityLive />
+        <SanityLive waitFor="function" />
       </body>
     </html>
   );
