@@ -34,6 +34,8 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@sanity/blueprints": "0.24.0",
+    "@sanity/functions": "1.7.2"
   }
 }
