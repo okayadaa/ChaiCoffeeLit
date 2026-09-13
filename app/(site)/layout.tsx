@@ -8,7 +8,10 @@ export default function SiteLayout({
   return (
     <>
       {children}
-      <SanityLive waitFor="function" />
+      <SanityLive 
+      waitFor="function" 
+      action="refresh"
+      />
     </>
   );
 }
