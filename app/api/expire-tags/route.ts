@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   }
 
   for (const tag of body.syncTags) {
-    revalidateTag(tag, "max");
+    revalidateTag(`sanity:${tag}`, "max");
   }
 
   return NextResponse.json({
