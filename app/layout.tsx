@@ -9,7 +9,6 @@ import {
   spaceMono,
 } from "./fonts";
 import "./globals.css";
-import { SanityLive } from "@/sanity/lib/live";
 
 config.autoAddCss = false;
 
@@ -34,8 +33,8 @@ export default function RootLayout({
       className={`${orbitron.variable} ${shareTechMono.variable} ${spaceMono.variable} ${play.variable} ${cyberpunk.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">{children} 
-        <SanityLive waitFor="function" />
+      <body className="min-h-full flex flex-col">
+        {children} 
       </body>
     </html>
   );
