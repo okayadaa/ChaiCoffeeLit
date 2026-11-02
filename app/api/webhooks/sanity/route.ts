@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { isValidSignature } from "@sanity/webhook";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 export const runtime = "nodejs";
 
@@ -7,6 +8,7 @@ type BlogWebhookPayload = {
   _id: string;
   title: string;
   slug?: string;
+  publishedAt?: string;
 };
 
 export async function POST(request: Request) {
@@ -67,6 +69,65 @@ export async function POST(request: Request) {
       id: payload._id,
       title: payload.title,
     });
+
+const publishedAt = payload.publishedAt;
+
+if (
+  !payload.slug ||
+  !publishedAt ||
+  !Number.isFinite(Date.parse(publishedAt))
+) {
+  console.log("Skipping post with missing publication details");
+
+  return NextResponse.json({
+    success: true,
+    skipped: true,
+    reason: "Missing publication details",
+  });
+}
+
+if (new Date(publishedAt).getTime() > Date.now()) {
+  console.log("Skipping future-dated post:", payload._id);
+
+  return NextResponse.json({
+    success: true,
+    skipped: true,
+    reason: "Future publication date",
+  });
+}
+
+const supabase = getSupabaseAdmin();
+
+const { data, error } = await supabase
+  .from("blog_notifications")
+  .upsert(
+    {
+      post_id: payload._id,
+      post_title: payload.title,
+      status: "pending",
+    },
+    {
+      onConflict: "post_id",
+      ignoreDuplicates: true,
+    }
+  )
+  .select("id, post_id, status");
+
+if (error) {
+  console.error("Failed to register blog notification:", error);
+
+  return NextResponse.json(
+    { error: "Failed to register notification" },
+    { status: 500 }
+  );
+}
+
+  console.log(
+    data?.length
+      ? "Registered new blog notification"
+      : "Notification already registered",
+    payload._id
+  );
 
     return NextResponse.json({
       success: true,

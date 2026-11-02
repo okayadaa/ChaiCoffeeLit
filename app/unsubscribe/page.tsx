@@ -19,7 +19,7 @@ export default async function UnsubscribePage({
         </h1>
 
         <p className="mb-6 leading-relaxed">
-          We're sorry to see you go. You can stop
+          We&apos;re sorry to see you go. You can stop
           receiving blog notifications at any time.
         </p>
 

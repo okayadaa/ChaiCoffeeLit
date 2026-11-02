@@ -54,7 +54,7 @@ export default function UnsubscribeForm({
     return (
       <div role="status" className="border border-[#333333]/20 p-5">
         <h2 className="mb-2 text-xl">
-          You've been unsubscribed.
+          You&apos;ve been unsubscribed.
         </h2>
         <p>
           You will no longer receive new blog

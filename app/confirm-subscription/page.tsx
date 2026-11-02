@@ -1,4 +1,5 @@
 import ConfirmSubscriptionForm from "./confirmSubscriptionForm";
+import Link from "next/link";
 
 type PageProps = {
   searchParams: Promise<{
@@ -24,7 +25,7 @@ export default async function ConfirmSubscriptionPage({
       {validTokenFormat ? (
         <>
           <p className="text-lg leading-relaxed">
-            You're one step away from receiving
+            You&apos;re one step away from receiving
             the latest stories from Chai Coffee Lit.
           </p>
 
@@ -41,12 +42,12 @@ export default async function ConfirmSubscriptionPage({
             This confirmation link is invalid.
           </p>
 
-          <a
+          <Link
             href="/blog"
             className="mt-6 inline-block underline underline-offset-4"
           >
             Return to the blog
-          </a>
+          </Link>
         </div>
       )}
     </main>
