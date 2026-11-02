@@ -12,6 +12,8 @@ export const handler = syncTagInvalidateEventHandler(
     }
 
     try {
+      console.log("Sync tags received:", event.data.syncTags);
+
       const response = await fetch(`${siteUrl}/api/expire-tags`, {
         method: "POST",
         headers: {
@@ -22,6 +24,11 @@ export const handler = syncTagInvalidateEventHandler(
           syncTags: event.data.syncTags,
         }),
       });
+
+      console.log(
+        "Next.js cache invalidation response:",
+        response.status,
+      );
 
       if (!response.ok) {
         throw new Error(

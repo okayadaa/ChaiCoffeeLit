@@ -13,6 +13,7 @@ import type { BlogListPost } from "@/lib/blog/types";
 import Link from "next/link";
 import type {Book} from "@/lib/books/types";
 import {BookShelf} from "@/components/books/BookShelf";
+import SubscribeForm from "@/components/SubscribeForm";
 
 type RightInsideProps = {
   posts: BlogListPost[];
@@ -57,7 +58,12 @@ export function RightInside({
               </p>
             </div>
             <PanelScrollBody className="pr-2">
-              <BlogPostList posts={posts.slice(0, 6)} />
+              <BlogPostList posts={posts.slice(0, 4)} />
+
+              {/* New email subscription section */}
+            <section className="mt-4 border-t border-[#333333]/20 pt-6">
+              <SubscribeForm />
+            </section>
             </PanelScrollBody>
             <Link
               href="/blog"
