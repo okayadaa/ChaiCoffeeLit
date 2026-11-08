@@ -55,15 +55,19 @@ export async function POST(request: Request) {
       rawBody
     ) as BlogWebhookPayload;
 
+    
     if (
       typeof payload._id !== "string" ||
-      typeof payload.title !== "string"
+      !payload._id.trim() ||
+      payload._id.startsWith("drafts.") ||
+      typeof payload.title !== "string" ||
+      !payload.title.trim()
     ) {
-      return NextResponse.json(
-        { error: "Invalid payload" },
-        { status: 400 }
-      );
-    }
+  return NextResponse.json(
+    { error: "Invalid blog post payload" },
+    { status: 400 }
+  );
+}
 
     console.log("Verified Sanity webhook:", {
       id: payload._id,
@@ -72,8 +76,14 @@ export async function POST(request: Request) {
 
 const publishedAt = payload.publishedAt;
 
+
+const postSlug =
+  typeof payload.slug === "string"
+    ? payload.slug.trim()
+    : "";
+
 if (
-  !payload.slug ||
+  !postSlug ||
   !publishedAt ||
   !Number.isFinite(Date.parse(publishedAt))
 ) {
@@ -104,6 +114,7 @@ const { data, error } = await supabase
     {
       post_id: payload._id,
       post_title: payload.title,
+      post_slug: postSlug,
       status: "pending",
     },
     {
@@ -111,7 +122,7 @@ const { data, error } = await supabase
       ignoreDuplicates: true,
     }
   )
-  .select("id, post_id, status");
+  .select("id, post_id, post_slug, status");
 
 if (error) {
   console.error("Failed to register blog notification:", error);
