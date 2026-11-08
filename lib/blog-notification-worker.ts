@@ -537,12 +537,14 @@ export async function processProductionNotificationBatch(
     };
   }
 
-
   // Claim a newly published notification and prepare
   // deliveries for active subscribers.
   const pendingNotification = await claimNextBlogNotification();
 
-  if (pendingNotification.claimed && pendingNotification.notification) {
+  if (
+    pendingNotification.claimed &&
+    pendingNotification.notification
+  ) {
     await prepareNotificationDeliveries(
       pendingNotification.notification.id
     );
@@ -551,8 +553,8 @@ export async function processProductionNotificationBatch(
   // Recover deliveries claimed but never authorized for sending.
   const recovery = await recoverUnstartedDeliveries(15);
 
-// Flag uncertain sends for manual review.
-// Never automatically retry these deliveries.
+  // Flag uncertain sends for manual review.
+  // Never automatically retry these deliveries.
   const uncertain = await flagUncertainDeliveries(15);
 
   console.log("[Blog Notification] Recovery:", {
@@ -606,9 +608,17 @@ export async function processProductionNotificationBatch(
     }
   }
 
-  
-    const failedDeliveries = results.filter(
-      (result) => !result.success).length;
+  // Finalize notifications only when all their
+  // deliveries have been successfully sent.
+  const finalization = await finalizeBlogNotifications();
+
+  console.log("[Blog Notification] Finalization:", {
+    completed: finalization.finalizedCount,
+  });
+
+  const failedDeliveries = results.filter(
+    (result) => !result.success
+  ).length;
 
   return {
     mode: "production" as const,
@@ -617,6 +627,7 @@ export async function processProductionNotificationBatch(
     success: failedDeliveries === 0,
     deliveriesProcessed: results.length,
     failedDeliveries,
+    finalizedNotifications: finalization.finalizedCount,
     emailsSent: results.reduce(
       (total, result) => total + result.emailsSent,
       0
@@ -785,6 +796,24 @@ export async function sendProductionDelivery() {
         "could not be confirmed. Manual review required."
     );
   }
+}
+
+export async function finalizeBlogNotifications() {
+  const supabase = getSupabaseAdmin();
+
+  const { data, error } = await supabase.rpc(
+    "finalize_blog_notifications"
+  );
+
+  if (error) {
+    throw new Error(
+      `Failed to finalize blog notifications: ${error.message}`
+    );
+  }
+
+  return {
+    finalizedCount: Number(data ?? 0),
+  };
 }
 
 
