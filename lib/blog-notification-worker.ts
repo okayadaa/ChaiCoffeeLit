@@ -424,10 +424,20 @@ export async function claimProductionDelivery() {
     );
   }
 
+  if (
+    testMode &&
+    !process.env.BLOG_NOTIFICATION_TEST_ID
+  ) {
+    throw new Error(
+      "BLOG_NOTIFICATION_TEST_ID is required in test mode"
+    );
+  }
+
   const { data, error } = testMode
     ? await supabase.rpc("claim_test_only_blog_delivery", {
         p_test_email: testEmail!,
-      })
+        p_notification_id: process.env.BLOG_NOTIFICATION_TEST_ID!,
+    })
     : await supabase.rpc("claim_blog_notification_delivery");
 
   if (error) {
@@ -537,10 +547,16 @@ export function isProductionSendingEnabled(): boolean {
 export async function processProductionNotificationBatch(
   requestedBatchSize = 3
 ) {
-  const batchSize = Math.min(
-    Math.max(Math.trunc(requestedBatchSize) || 1, 1),
-    3
-  );
+  const testMode =
+    process.env.BLOG_NOTIFICATION_TEST_MODE === "true";
+
+  // Test mode processes at most one delivery per execution.
+  const batchSize = testMode
+    ? 1
+    : Math.min(
+        Math.max(Math.trunc(requestedBatchSize) || 1, 1),
+        3
+      );
 
   // Never claim deliveries while sending is disabled.
   if (!isProductionSendAuthorized()) {
@@ -550,19 +566,21 @@ export async function processProductionNotificationBatch(
     };
   }
 
-  // Claim a newly published notification and prepare
-  // deliveries for active subscribers.
-  const pendingNotification = await claimNextBlogNotification();
+  // In test mode, skip normal notification claiming
+  // and preparation for all active subscribers.
+  if (!testMode) {
+    const pendingNotification =
+      await claimNextBlogNotification();
 
-  if (
-    pendingNotification.claimed &&
-    pendingNotification.notification
-  ) {
-    await prepareNotificationDeliveries(
-      pendingNotification.notification.id
-    );
+    if (
+      pendingNotification.claimed &&
+      pendingNotification.notification
+    ) {
+      await prepareNotificationDeliveries(
+        pendingNotification.notification.id
+      );
+    }
   }
-
   // Recover deliveries claimed but never authorized for sending.
   const recovery = await recoverUnstartedDeliveries(15);
 
