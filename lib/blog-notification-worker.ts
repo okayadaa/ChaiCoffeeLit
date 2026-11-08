@@ -413,9 +413,22 @@ const { data, error } = await supabase.rpc(
 export async function claimProductionDelivery() {
   const supabase = getSupabaseAdmin();
 
-  const { data, error } = await supabase.rpc(
-    "claim_blog_notification_delivery"
-  );
+  const testMode =
+    process.env.BLOG_NOTIFICATION_TEST_MODE === "true";
+
+  const testEmail = process.env.TEST_EMAIL?.trim();
+
+  if (testMode && !testEmail) {
+    throw new Error(
+      "TEST_EMAIL is required in notification test mode"
+    );
+  }
+
+  const { data, error } = testMode
+    ? await supabase.rpc("claim_test_only_blog_delivery", {
+        p_test_email: testEmail!,
+      })
+    : await supabase.rpc("claim_blog_notification_delivery");
 
   if (error) {
     throw new Error(
@@ -669,6 +682,33 @@ export async function sendProductionDelivery() {
   }
 
   const delivery = claim.delivery;
+
+
+  if (process.env.BLOG_NOTIFICATION_TEST_MODE === "true") {
+    const testEmail = process.env.TEST_EMAIL?.trim();
+
+    if (!testEmail) {
+      throw new Error("TEST_EMAIL is required in test mode");
+    }
+
+    const { data: testSubscriber, error: testError } =
+      await supabase
+        .from("subscribers")
+        .select("id")
+        .ilike("email", testEmail)
+        .eq("status", "active")
+        .single();
+
+    if (
+      testError ||
+      !testSubscriber ||
+      delivery.subscriber_id !== testSubscriber.id
+    ) {
+      throw new Error(
+        "Delivery does not belong to the authorized test subscriber"
+      );
+    }
+  }
 
   // 2. Retrieve subscriber and notification details.
   const { data: subscriber, error: subscriberError } =
