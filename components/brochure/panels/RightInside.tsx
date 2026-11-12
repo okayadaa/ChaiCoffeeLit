@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import dynamic from "next/dynamic";
+import { BookShelf } from "@/components/books/BookShelf";
+import SubscribeForm from "@/components/SubscribeForm";
 import { rightPanelNavLinks } from "../content/right-panel";
 import type { RightPanelView, SlideDirection } from "../types";
 import { BlogPostList } from "../ui/BlogPostList";
@@ -13,11 +14,6 @@ import { ScrambleText } from "../ui/ScrambleText";
 import type { BlogListPost } from "@/lib/blog/types"; 
 import Link from "next/link";
 import type {Book} from "@/lib/books/types";
-
-const BookShelf = dynamic(() =>
-  import("@/components/books/BookShelf").then((module) => module.BookShelf),
-);
-const SubscribeForm = dynamic(() => import("@/components/SubscribeForm"));
 
 type RightInsideProps = {
   posts: BlogListPost[];

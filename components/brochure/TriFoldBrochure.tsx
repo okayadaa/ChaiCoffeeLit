@@ -87,7 +87,7 @@ export default function TriFoldBrochure({
   const leftShadow = useWingShadow(leftRotate, "left");
   const rightShadow = useWingShadow(rightRotate, "right");
 
-  const showMobileTabs = isMobile && mobileView !== "cover";
+  const showMobileTabs = isMobile && mobileView === "overview";
   const chromeH = showMobileTabs ? MOBILE_TAB_HEIGHT : 0;
   const availW = width - VIEWPORT_PADDING * 2;
   const availH = height - VIEWPORT_PADDING * 2 - chromeH;
@@ -502,7 +502,7 @@ export default function TriFoldBrochure({
             </motion.div>
           </div>
 
-          {showMobileTabs && mobileView === "overview" && (
+          {showMobileTabs && (
             <div className="mt-3 shrink-0">
               <MobilePanelTabs
                 activePanel={null}
@@ -512,12 +512,6 @@ export default function TriFoldBrochure({
           )}
         </div>
 
-        {showMobileTabs && mobileView === "focus" && (
-          <MobilePanelTabs
-            activePanel={activePanel}
-            onSelect={selectPanel}
-          />
-        )}
       </div>
     ) : brochureScene;
 }
