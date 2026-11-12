@@ -63,12 +63,6 @@ export default function TriFoldBrochure({
   const isFirstCameraSync = useRef(true);
   const brochureRef = useRef<HTMLDivElement>(null);
   const mounted = useHasMounted();
-  const [loadingComplete, setLoadingComplete] = useState(false);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setLoadingComplete(true), 2000);
-    return () => window.clearTimeout(timer);
-  }, []);
 
   if (isMobile !== prevIsMobile) {
     setPrevIsMobile(isMobile);
@@ -84,8 +78,8 @@ export default function TriFoldBrochure({
   const { fit, panelWidth, brochureHeight } = useBrochureSize(isMobile);
   const layoutWidth = panelWidth * (isMobile ? 3 : isOpen ? 3 : 1);
 
-  const leftRotate = useMotionValue(180);
-  const rightRotate = useMotionValue(-180);
+  const leftRotate = useMotionValue(startsOpen ? 0 : 180);
+  const rightRotate = useMotionValue(startsOpen ? 0 : -180);
   const cameraScale = useMotionValue(1);
   const cameraX = useMotionValue(0);
   const cameraY = useMotionValue(0);
@@ -400,7 +394,7 @@ export default function TriFoldBrochure({
             }}
           >
             <PanelFace fit={fit} variant="center" className="rounded-sm">
-              <CenterPanel />
+              {(isOpen || isAnimating) && <CenterPanel />}
             </PanelFace>
             {isOpen && <Crease side="left" />}
             {isOpen && <Crease side="right" />}
@@ -470,7 +464,7 @@ export default function TriFoldBrochure({
     return <CafeLoading />;
   }
 
-  const content = isMobile ? (
+  return isMobile ? (
       <div className="relative flex w-full max-w-full flex-col items-center justify-center overflow-hidden">
         <div
           className={`relative flex w-full overflow-hidden ${
@@ -526,11 +520,4 @@ export default function TriFoldBrochure({
         )}
       </div>
     ) : brochureScene;
-
-  return (
-    <>
-      <div inert={!loadingComplete}>{content}</div>
-      <CafeLoading fading={loadingComplete} />
-    </>
-  );
 }

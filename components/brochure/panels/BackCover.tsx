@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { cyberpunk } from "@/app/fonts";
-import logo from "@/assets/logo-image.png";
+import logo from "@/assets/brochure-logo.webp";
 
 export function BackCover() {
   return (
@@ -9,7 +9,9 @@ export function BackCover() {
         src={logo}
         alt="Chai Coffee Lit logo"
         className="mb-[-65px] h-92 w-92 object-contain"
-        priority
+        sizes="(max-width: 640px) 65vw, 368px"
+        loading="eager"
+        fetchPriority="high"
       />
       <p
         className={`${cyberpunk.className} text-[29px] uppercase tracking-[0.4em] text-[#333333] [backface-visibility:visible] [-webkit-backface-visibility:visible]`}

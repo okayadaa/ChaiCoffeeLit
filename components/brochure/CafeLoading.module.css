@@ -7,15 +7,6 @@
   place-items: center;
   padding: 24px;
   color: #594634;
-  opacity: 1;
-  visibility: visible;
-  transition: opacity 800ms ease-in-out, visibility 0s linear 800ms;
-}
-
-.fading {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
 }
 
 .paper {
@@ -84,5 +75,4 @@
 
 @media (prefers-reduced-motion: reduce) {
   .spoon, .ripple, .steam { animation: none; }
-  .screen { transition: none; }
 }

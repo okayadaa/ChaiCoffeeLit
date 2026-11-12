@@ -1,13 +1,19 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import dynamic from "next/dynamic";
 import { leftPanelNavLinks } from "../content/left-panel";
 import type { LeftPanelView, SlideDirection } from "../types";
 import { PanelMenu } from "../ui/PanelMenu";
 import { PanelSlideView } from "../ui/PanelSlideView";
-import { AboutPanel } from "@/components/about/AboutPanel";
-import { ArchivePanel } from "@/components/archive/ArchivePanel";
 import type { ArchiveItem } from "@/lib/archive/types";
+
+const AboutPanel = dynamic(() =>
+  import("@/components/about/AboutPanel").then((module) => module.AboutPanel),
+);
+const ArchivePanel = dynamic(() =>
+  import("@/components/archive/ArchivePanel").then((module) => module.ArchivePanel),
+);
 
 export function LeftInside({
   archiveItems,

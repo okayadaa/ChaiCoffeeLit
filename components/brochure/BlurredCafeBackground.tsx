@@ -1,4 +1,4 @@
-import cafeSetting from "@/assets/cafe-setting.jpg";
+import cafeSetting from "@/assets/cafe-background.webp";
 
 export function BlurredCafeBackground() {
   return (

@@ -2,14 +2,13 @@ import paperTexture from "@/assets/paper.webp";
 import { PAPER_STYLE, PAPER_TEXTURE } from "./constants";
 import styles from "./CafeLoading.module.css";
 
-export function CafeLoading({ fading = false }: { fading?: boolean }) {
+export function CafeLoading() {
   return (
     <div
-      className={`${styles.screen} ${fading ? styles.fading : ""}`}
+      className={styles.screen}
       style={PAPER_STYLE}
       role="status"
       aria-live="polite"
-      aria-hidden={fading || undefined}
     >
       <div
         className={styles.paper}
