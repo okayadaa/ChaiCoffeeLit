@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
 import { isValidSignature } from "@sanity/webhook";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
+import { after } from "next/server";
+
+import {
+  processProductionNotificationBatch,
+} from "@/lib/blog-notification-worker";
 
 export const runtime = "nodejs";
+export const maxDuration = 60;
 
 type BlogWebhookPayload = {
   _id: string;
@@ -133,17 +139,45 @@ if (error) {
   );
 }
 
-  console.log(
-    data?.length
-      ? "Registered new blog notification"
-      : "Notification already registered",
-    payload._id
-  );
+const isNewNotification = Boolean(data?.length);
 
-    return NextResponse.json({
-      success: true,
-      message: "Webhook received",
-    });
+console.log(
+  isNewNotification
+    ? "Registered new blog notification"
+    : "Notification already registered",
+  payload._id
+);
+
+if (isNewNotification) {
+  after(async () => {
+    try {
+      for (let batch = 1; batch <= 2; batch++) {
+        const result =
+          await processProductionNotificationBatch(3);
+  
+        console.log(
+          `[Blog Notification] Batch ${batch}:`,
+          result
+        );
+  
+        if (!result.success || result.deliveriesProcessed === 0) {
+          break;
+        }
+      }
+    } catch (error) {
+      console.error(
+        "[Blog Notification] Webhook processing failed:",
+        error
+      );
+    }
+  });
+}
+
+return NextResponse.json({
+  success: true,
+  message: "Webhook received",
+  processingScheduled: isNewNotification,
+});
   } catch (error) {
     console.error("Sanity webhook error:", error);
 
