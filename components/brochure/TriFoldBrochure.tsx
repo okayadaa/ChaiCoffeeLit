@@ -33,6 +33,7 @@ import type { BlogListPost } from "@/lib/blog/types";
 import type { Book } from "@/lib/books/types";
 import type { ArchiveItem } from "@/lib/archive/types";
 import { useHasMounted } from "./hooks/useHasMounted";
+import { CafeLoading } from "./CafeLoading";
 
 type TriFoldBrochureProps = {
   posts: BlogListPost[];
@@ -62,6 +63,12 @@ export default function TriFoldBrochure({
   const isFirstCameraSync = useRef(true);
   const brochureRef = useRef<HTMLDivElement>(null);
   const mounted = useHasMounted();
+  const [loadingComplete, setLoadingComplete] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setLoadingComplete(true), 2000);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   if (isMobile !== prevIsMobile) {
     setPrevIsMobile(isMobile);
@@ -460,11 +467,10 @@ export default function TriFoldBrochure({
   );
 
   if (!mounted) {
-    return null;
+    return <CafeLoading />;
   }
 
-  if (isMobile) {
-    return (
+  const content = isMobile ? (
       <div className="relative flex w-full max-w-full flex-col items-center justify-center overflow-hidden">
         <div
           className={`relative flex w-full overflow-hidden ${
@@ -519,8 +525,12 @@ export default function TriFoldBrochure({
           />
         )}
       </div>
-    );
-  }
+    ) : brochureScene;
 
-  return brochureScene;
+  return (
+    <>
+      <div inert={!loadingComplete}>{content}</div>
+      <CafeLoading fading={loadingComplete} />
+    </>
+  );
 }

@@ -16,6 +16,13 @@ function wheelDeltaY(event: WheelEvent, el: HTMLElement) {
   return event.deltaY;
 }
 
+function hasNestedScrollRegion(target: EventTarget | null) {
+  const region = target instanceof Element
+    ? target.closest("[data-panel-scroll-region]")
+    : null;
+  return region !== null && region.scrollHeight > region.clientHeight;
+}
+
 export function PanelScrollBody({
   children,
   className = "",
@@ -38,7 +45,7 @@ export function PanelScrollBody({
     };
 
     const onMove = (event: globalThis.TouchEvent) => {
-      if (el.scrollHeight <= el.clientHeight) return;
+      if (hasNestedScrollRegion(event.target) || el.scrollHeight <= el.clientHeight) return;
 
       const dy = (startY - event.touches[0].clientY) / visualScale(el);
       el.scrollTop = startScroll + dy;
@@ -47,7 +54,7 @@ export function PanelScrollBody({
     };
 
     const onWheel = (event: WheelEvent) => {
-      if (el.scrollHeight <= el.clientHeight) return;
+      if (hasNestedScrollRegion(event.target) || el.scrollHeight <= el.clientHeight) return;
 
       el.scrollTop += wheelDeltaY(event, el) / visualScale(el);
       event.preventDefault();

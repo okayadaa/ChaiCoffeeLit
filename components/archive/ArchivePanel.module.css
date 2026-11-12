@@ -1,0 +1,28 @@
+.postcards {
+  --postcard-gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--postcard-gap);
+  padding-block: 0.75rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .postcard {
+    position: relative;
+    z-index: calc(5 - var(--postcard-index));
+    animation: deal-postcard 650ms cubic-bezier(0.22, 1, 0.36, 1)
+      calc(1s + var(--postcard-index) * 75ms) backwards;
+  }
+}
+
+@keyframes deal-postcard {
+  from {
+    transform: translateY(
+      calc(var(--postcard-index) * (6px - 100% - var(--postcard-gap)))
+    ) rotate(calc(var(--postcard-index) * 1deg));
+  }
+
+  to {
+    transform: none;
+  }
+}

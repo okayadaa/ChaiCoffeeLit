@@ -7,6 +7,8 @@ import { ArchivePostcard } from "@/components/archive/ArchivePostcard";
 import type { ArchiveItem } from "@/lib/archive/types";
 import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
+import type { CSSProperties } from "react";
+import styles from "./ArchivePanel.module.css";
 
 type ArchivePanelProps = {
   archiveItems: ArchiveItem[];
@@ -28,25 +30,34 @@ export function ArchivePanel({ archiveItems, onBack }: ArchivePanelProps) {
             The archive is being gathered. Check back soon.
           </p>
         ) : (
-          <div className="flex flex-col gap-8">
-            {archiveItems.slice(0, 5).map((item) => {
-              const imageUrl = urlFor(item.image)
-                .width(900)
-                .height(600)
-                .fit("crop")
-                .url();
+          <>
+            <p className="text-sm leading-relaxed text-neutral-600">Tap a postcard to flip it</p>
+            <div className={styles.postcards}>
+              {archiveItems.slice(0, 5).map((item, index) => {
+                const imageUrl = urlFor(item.image)
+                  .width(900)
+                  .height(600)
+                  .fit("crop")
+                  .url();
 
-              return (
-                <ArchivePostcard
-                  key={item._id}
-                  title={item.title}
-                  imageSrc={imageUrl}
-                  imageAlt={item.title}
-                  date={item.eventDate}
-                />
-              );
-            })}
-          </div>
+                return (
+                  <div
+                    key={item._id}
+                    className={styles.postcard}
+                    style={{ "--postcard-index": index } as CSSProperties}
+                  >
+                    <ArchivePostcard
+                      title={item.title}
+                      imageSrc={imageUrl}
+                      imageAlt={item.title}
+                      date={item.eventDate}
+                      description={item.description}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </>
         )}
       </PanelScrollBody>
 

@@ -1,0 +1,88 @@
+.screen {
+  --cup-paper: #f9fafb;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: #594634;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 800ms ease-in-out, visibility 0s linear 800ms;
+}
+
+.fading {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.paper {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  filter: contrast(1.12) brightness(0.98);
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.drawing {
+  width: min(160px, 45vw);
+  height: auto;
+  overflow: visible;
+}
+
+.spoon {
+  transform-origin: 132px 113px;
+  animation: stir 1.8s linear infinite;
+}
+
+.ripple {
+  transform-origin: 128px 112px;
+  animation: ripple 1.8s ease-in-out infinite;
+}
+
+.steam {
+  animation: steam 3.6s ease-in-out infinite;
+}
+
+@keyframes stir {
+  0%, 100% { transform: translate(-14px, 0) rotate(-12deg); }
+  25% { transform: translate(0, -4px) rotate(0deg); }
+  50% { transform: translate(14px, 0) rotate(12deg); }
+  75% { transform: translate(0, 4px) rotate(0deg); }
+}
+
+@keyframes ripple {
+  0%, 100% { transform: scaleX(0.85); opacity: 0.3; }
+  50% { transform: scaleX(1.08); opacity: 0.65; }
+}
+
+@keyframes steam {
+  0%, 100% { transform: translateY(2px); opacity: 0.35; }
+  50% { transform: translateY(-5px); opacity: 0.7; }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spoon, .ripple, .steam { animation: none; }
+  .screen { transition: none; }
+}
